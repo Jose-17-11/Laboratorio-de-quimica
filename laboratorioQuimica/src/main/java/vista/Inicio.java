@@ -17,6 +17,12 @@ import javax.swing.border.LineBorder;
 //		Encabezado de la ventana 
         setTitle("Administrador");
 		setResizable(false);
+		JLabel imagenLabel = new JLabel();//Se crea el label que almacenara el logo del tec de cuautla
+//		Se crea el objeto de tipo imagen pasandole la direccion de donde se encuentra la imagen a utilizar
+		ImageIcon imagenIcon = new ImageIcon(
+				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
+		imagenLabel.setIcon(imagenIcon);//Se le pasa de parametro al label el objeto que contiene a la imagen a utilizar
+		imagenLabel.setBounds(75, 50, 100, 79);//Se definen las dimenciones de la posicion y el tamaño de la imagen
 //		Titulo Label descriptivo
 		titulo = new JLabel("Bienvenido");
 		titulo.setBounds(400,0,400,100);
@@ -57,9 +63,11 @@ import javax.swing.border.LineBorder;
 		LineBorder borde = new LineBorder(Color.BLACK, 1);
         ((JComponent) panel).setBorder(borde);
 
-        ImageIcon icono = new ImageIcon("C:\\Users\\Jose\\eclipse-workspace-poo\\12345\\src\\main\\resources\\img\\tecCuautla.png");
+        ImageIcon icono = new ImageIcon(
+        		"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
         setIconImage(icono.getImage());
 		panel.setLayout(null);
+		panel.add(imagenLabel);
 		panel.add(titulo);
 		panel.add(description);
 		panel.add(registrarEntrada);

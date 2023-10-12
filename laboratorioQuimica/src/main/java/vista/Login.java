@@ -6,13 +6,15 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import controlador.Acceso;
+
 public class Login extends JFrame {
 //		Variables que tomaran el valor de los inputs
 	String usuario, password;
 //	De momento este sera el usuario y contraseña del administrador
 	String admin = "root", contra = "1234";
 //		Textos label que diran el dato que se debe ingresar en los inputs
-	JLabel titulo, n1, n2, denegado, bordeT;
+	JLabel titulo, n1, n2, denegado;
 //		Inputs que almasenaran el dato que se les ingrese
 	JTextField text1, text2;
 //		Boton que al darle click hara una accion
@@ -23,7 +25,7 @@ public class Login extends JFrame {
 //		Se crea el objeto icono para que el software tenga su icono personalizado
 		ImageIcon icono = new ImageIcon(
 				//Se le ingresa de parametro la direccion donde esta ubicado el icono a elegir
-				"C:\\Users\\Jose\\eclipse-workspace-poo\\12345\\src\\main\\resources\\img\\tecCuautla.png");
+				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
 		setIconImage(icono.getImage());
 //		Encabezado de la ventana 
 		setTitle("Login");
@@ -32,13 +34,13 @@ public class Login extends JFrame {
 		JLabel imagenLabel = new JLabel();//Se crea el label que almacenara el logo del tec de cuautla
 //		Se crea el objeto de tipo imagen pasandole la direccion de donde se encuentra la imagen a utilizar
 		ImageIcon imagenIcon = new ImageIcon(
-				"C:\\Users\\Jose\\eclipse-workspace-poo\\12345\\src\\main\\resources\\img\\tecCuautla.png");
+				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
 		imagenLabel.setIcon(imagenIcon);//Se le pasa de parametro al label el objeto que contiene a la imagen a utilizar
 		imagenLabel.setBounds(75, 50, 100, 79);//Se definen las dimenciones de la posicion y el tamaño de la imagen
 
 		JLabel imagenLabel2 = new JLabel();
 		ImageIcon imagenIcon2 = new ImageIcon(
-				"C:\\Users\\Jose\\eclipse-workspace-poo\\12345\\src\\main\\resources\\img\\TecNM_logo_oscuro_1.png");
+				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\TecNM.png");
 		imagenLabel2.setIcon(imagenIcon2);
 		imagenLabel2.setBounds(500, 50, 190, 79);
 
@@ -93,15 +95,19 @@ public class Login extends JFrame {
 		boton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				Se compara que el usuario y contraseña ingresados por el usuario sean los del administrador 
-				if (text1.getText().equalsIgnoreCase(usuario) && text2.getText().equals(password)) {
+				usuario = text1.getText();
+				password = text2.getText();
+				Acceso login = new Acceso();
+//				Se verifica si el metodo acceso de la clase Acceso devuelve true o false de acuerdo a los datos ingresados
+				if (login.acceso(usuario, password)) {
 //					En el caso de que si lo sean se visibiliza o abre la ventana del administrador
 					Inicio sm = new Inicio();
 					sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					sm.setVisible(true);
-					sm.setBounds(200, 0, 950, 400);
-					bordeT.setText(admin);
+					sm.setBounds(200, 0, 950, 800);
+					denegado.setText(" ");
 				} else {
+					//Si los datos ingresados son incorrectos se le da el siguiente texto a la variable denegado
 					denegado.setText("Usuario o contraseña incorrectos.");
 				}
 

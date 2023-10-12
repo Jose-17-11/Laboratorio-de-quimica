@@ -61,7 +61,8 @@ import modelo.Profesor;
 		LineBorder borde = new LineBorder(Color.BLACK, 1);
         ((JComponent) panel).setBorder(borde);
 
-        ImageIcon icono = new ImageIcon("C:\\Users\\Jose\\eclipse-workspace-poo\\12345\\src\\main\\resources\\img\\tecCuautla.png");
+        ImageIcon icono = new ImageIcon(
+        		"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
         setIconImage(icono.getImage());
 		panel.setLayout(null);
 		panel.add(description);
