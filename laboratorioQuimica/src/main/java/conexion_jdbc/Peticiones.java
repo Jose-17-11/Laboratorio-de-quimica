@@ -1,8 +1,10 @@
 package conexion_jdbc;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.Scanner;
 
@@ -69,7 +71,96 @@ public class Peticiones {
 		}
 		return null;
 	}
+	
+	//En este metodo se agregan maestros nuevo para darles acceso a los laboratorios de quimica
+	public String nuevoMaestro(String matricula, String nombre, String apellido) throws SQLIntegrityConstraintViolationException {
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
 
+		try {
+			cn = conexion.conectar();
+			stm = cn.createStatement();
+			rs = stm.executeQuery("SELECT * FROM maestros");
+			String consulta = "INSERT INTO maestros (Matricula, nombre, apellido) VALUES (?, ?, ?)";
+
+		    // Crear un objeto PreparedStatement
+		    PreparedStatement pstmt = cn.prepareStatement(consulta);
+		    //En el objeto se ingresan los atributos del nuevo maestro
+            pstmt.setString(1, matricula);
+            pstmt.setString(2, nombre);
+            pstmt.setString(3, apellido);
+
+            // Ejecutar la consulta
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                return("Maestro agregado con éxito.");
+            } else {
+                return("No se pudo agregar el profesor.");
+            }
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+			conexion.desconectar(cn, stm, rs);
+            // Maneja la excepción de duplicación de clave primaria aquí
+            return("El maestro que intenta ingresar ya se encuentra registrado.");	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			conexion.desconectar(cn, stm, rs);
+		}
+		return "";
+	}
+
+	public String eliminarMaestro(String matricula) throws SQLIntegrityConstraintViolationException {
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
+
+		try {
+			cn = conexion.conectar();
+			stm = cn.createStatement();
+			rs = stm.executeQuery("SELECT * FROM maestros");
+			String consulta = "DELETE FROM maestros WHERE Matricula = ?";
+
+		    // Crear un objeto PreparedStatement
+		    PreparedStatement pstmt = cn.prepareStatement(consulta);
+		    //En el objeto se ingresan los atributos del nuevo maestro
+            pstmt.setString(1, matricula);
+
+            // Ejecutar la consulta
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                return "Maestro eliminado con éxito.";
+            } else {
+                return "No se pudo encontrar al maestro con la matrícula proporcionada.";
+            }
+
+		} catch (SQLException e) {
+	        e.printStackTrace();
+	        return "Error al eliminar al maestro.";
+	    } finally {
+	    	conexion.desconectar(cn, stm, rs);
+	    }
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public void PeticionesJdbc() {
 		Scanner sc = new Scanner(System.in);
 //		cn es una variable para representar la conexion a una base de datos

@@ -10,8 +10,8 @@ import modelo.Profesor;
 
 	public class RegistrarMaestro extends JFrame{
 //		Textos label que diran el dato que se debe ingresar en los inputs
-		JLabel description,exitosamente,n1,n2,n3;
-		JTextField text1,text2,text3;
+		JLabel description,exitosamente,n1,n2,n3,n4;
+		JTextField text1,text2,text3,text4;
 //		Boton que al darle click hara una accion
 		JButton registrarEntrada;
 		
@@ -22,35 +22,42 @@ import modelo.Profesor;
 		setResizable(false);
 
 		description = new JLabel("Registre los datos del maestro que ingresara al laboratorio.");
-		description.setBounds(190,0,700,100);
+		description.setBounds(220,0,700,100);
 		description.setFont(new Font("Courier New", Font.BOLD, 16));
 		description.setForeground(Color.WHITE);
 
 //		Texto label que indica que hay que entrada es
 		n1 = new JLabel("Matricula");
-		n1.setBounds(150, 80,200,100);
+		n1.setBounds(120, 80,200,100);
 		n1.setForeground(Color.WHITE);
 //		Input que extrae el dato que se le ingresa
 		text1 = new JTextField(10);
-		text1.setBounds(60,150,220,30);
+		text1.setBounds(50,150,200,30);
 		
 //		Texto label que indica que hay que entrada es
-		n2 = new JLabel("Grupo");
-		n2.setBounds(450, 80,200,100);
+		n2 = new JLabel("Salon");
+		n2.setBounds(390, 80,200,100);
 		n2.setForeground(Color.WHITE);
 //		Input que extrae el dato que se le ingresa
 		text2 = new JTextField(10);
-		text2.setBounds(360,150,220,30);
+		text2.setBounds(300,150,200,30);
 
-		n3 = new JLabel("Materia");
-		n3.setBounds(750, 80,200,100);
+		n3 = new JLabel("Grupo");
+		n3.setBounds(620, 80,200,100);
 		n3.setForeground(Color.WHITE);
 		text3 = new JTextField(10);
-		text3.setBounds(660, 150, 220, 30);
+		text3.setBounds(550, 150, 200, 30);
+		
+		n4 = new JLabel("Materia");
+		n4.setBounds(880, 80,200,100);
+		n4.setForeground(Color.WHITE);
+//		Input que extrae el dato que se le ingresa
+		text4 = new JTextField(10);
+		text4.setBounds(800,150,200,30);
         
 //		Boton que al darle click hara todas las acciones que se le indique
 		registrarEntrada = new JButton("Registrar entrada");
-		registrarEntrada.setBounds(400, 250, 150, 30);
+		registrarEntrada.setBounds(450, 250, 150, 30);
 		
 		exitosamente = new JLabel();
 		exitosamente.setBounds(360,280,400,50);
@@ -69,13 +76,15 @@ import modelo.Profesor;
 		panel.add(n1);
 		panel.add(n2);
 		panel.add(n3);
+		panel.add(n4);
 		panel.add(text1);
 		panel.add(text2);
 		panel.add(text3);
+		panel.add(text4);
 		panel.add(exitosamente);
 		panel.add(registrarEntrada);
 //		Color de fondo del panel
-		panel.setBackground(Color.BLUE);
+		panel.setBackground(new Color(45, 45, 45));
 //	Acciones que se activaran al darle click al boton calcular
 	registrarEntrada.addActionListener(new ActionListener() {
 		@Override

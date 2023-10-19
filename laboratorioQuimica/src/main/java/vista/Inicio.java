@@ -33,7 +33,7 @@ public class Inicio extends JFrame {
 		/*******************************************
 		 * Panel Izquierdo y su contenido
 		 *******************************************/
-		JLabel nombre, matricula, correo;
+		JLabel nombre, apellido, matricula, correo;
 		// Crear un panel en la izquierda con un color diferente
 		JPanel panelIzquierda = new JPanel();
 		panelIzquierda.setBounds(0, 0, 190, 800); // Ajusta las coordenadas y el tamaño según tus necesidades
@@ -60,13 +60,25 @@ public class Inicio extends JFrame {
 		nombre.setBounds(20, 280, 400, 100);
 		nombre.setForeground(Color.WHITE);
 
+
+		apellido = new JLabel("Arias Hernandez");
+		apellido.setBounds(20, 300, 400, 100);
+		apellido.setForeground(Color.WHITE);
+		
 		String id = datos.nombreMatricula(false);
 		matricula = new JLabel("Matricula: " + id);
-		matricula.setBounds(20, 300, 400, 100);
+		matricula.setBounds(20, 330, 400, 100);
 		matricula.setForeground(Color.WHITE);
 
+		correo = new JLabel("21680037@cuautla.tecnm.mx");
+		correo.setBounds(10, 350, 400, 100);
+		correo.setForeground(Color.WHITE);
+
+		
 		panelIzquierda.add(nombre);
 		panelIzquierda.add(matricula);
+		panelIzquierda.add(apellido);
+		panelIzquierda.add(correo);
 		panelIzquierda.add(imagenTecnm);
 		panelIzquierda.add(imagenAdmin);
 		/*************************************************************************************************************************************/
@@ -138,7 +150,7 @@ public class Inicio extends JFrame {
 				RegistrarMaestro sm = new RegistrarMaestro();
 				sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				sm.setVisible(true);
-				sm.setBounds(200, 380, 950, 400);
+				sm.setBounds(200, 250, 1050, 400);
 			}
 		});
 		/******* Agregar un nuevo maestro a la base de datos ***************/
@@ -148,7 +160,7 @@ public class Inicio extends JFrame {
 				NuevoMaestro sm = new NuevoMaestro();
 				sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				sm.setVisible(true);
-				sm.setBounds(15, 0, 1350, 600);
+				sm.setBounds(15, 0, 1100, 500);
 			}
 		});
 
@@ -159,7 +171,7 @@ public class Inicio extends JFrame {
 				EliminarMaestro sm = new EliminarMaestro();
 				sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				sm.setVisible(true);
-				sm.setBounds(15, 0, 1350, 600);
+				sm.setBounds(15, 0, 920, 400);
 			}
 		});
 
