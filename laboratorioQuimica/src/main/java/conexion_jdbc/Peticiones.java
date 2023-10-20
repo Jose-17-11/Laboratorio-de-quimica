@@ -1,11 +1,14 @@
 package conexion_jdbc;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class Peticiones {
@@ -44,7 +47,8 @@ public class Peticiones {
 		}
 		return false;
 	}
-	
+
+	// Comparacion de datos del login del administrador
 	public String datos(boolean option) {
 		Connection cn = null;
 		Statement stm = null;
@@ -58,9 +62,9 @@ public class Peticiones {
 			while (rs.next()) {
 				String nombre = rs.getString(4);
 				String matricula = rs.getString(1);
-				if(option == true) {
+				if (option == true) {
 					return nombre;
-				}else {
+				} else {
 					return matricula;
 				}
 			}
@@ -71,9 +75,58 @@ public class Peticiones {
 		}
 		return null;
 	}
-	
-	//En este metodo se agregan maestros nuevo para darles acceso a los laboratorios de quimica
-	public String nuevoMaestro(String matricula, String nombre, String apellido) throws SQLIntegrityConstraintViolationException {
+
+	public String accesoLaboratorio(String matricula, String salon, String grupo, String materia) throws SQLIntegrityConstraintViolationException {
+		/*************************** Fecha y Hora **********************************/
+		
+
+		/********************************************************************/
+
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
+
+		try {
+			cn = conexion.conectar();
+			stm = cn.createStatement();
+			rs = stm.executeQuery("SELECT * FROM accesos");
+	        String consulta = "INSERT INTO accesos (fecha, hora, maestro, salon, grupo, materia) VALUES (?, ?, ?, ?, ?, ?)";
+			// Crear un objeto PreparedStatement
+			PreparedStatement pstmt = cn.prepareStatement(consulta);
+			// En el objeto se ingresan los atributos del nuevo maestro
+			LocalDateTime locaDate = LocalDateTime.now();
+	        Date fechaSQL = Date.valueOf(locaDate.toLocalDate());
+	        Time horaSQL = Time.valueOf(locaDate.toLocalTime());
+			pstmt.setDate(1, fechaSQL);
+			pstmt.setTime(2, horaSQL);
+			pstmt.setString(3, matricula);
+			pstmt.setString(4, salon);
+			pstmt.setString(5, grupo);
+			pstmt.setString(6, materia);
+
+			// Ejecutar la consulta
+			int filasAfectadas = pstmt.executeUpdate();
+			if (filasAfectadas > 0) {
+				return ("Maestro agregado con éxito.");
+			} else {
+				return ("No se pudo agregar el profesor.");
+			}
+
+		} catch (SQLIntegrityConstraintViolationException e) {
+	        // Maneja la excepción de duplicación de clave primaria aquí
+	        return "El maestro que intenta ingresar ya se encuentra registrado.";
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        conexion.desconectar(cn, stm, rs);
+	    }
+		return "";
+	}
+
+	// En este metodo se agregan maestros nuevo para darles acceso a los
+	// laboratorios de quimica
+	public String nuevoMaestro(String matricula, String nombre, String apellido)
+			throws SQLIntegrityConstraintViolationException {
 		Connection cn = null;
 		Statement stm = null;
 		ResultSet rs = null;
@@ -84,33 +137,35 @@ public class Peticiones {
 			rs = stm.executeQuery("SELECT * FROM maestros");
 			String consulta = "INSERT INTO maestros (Matricula, nombre, apellido) VALUES (?, ?, ?)";
 
-		    // Crear un objeto PreparedStatement
-		    PreparedStatement pstmt = cn.prepareStatement(consulta);
-		    //En el objeto se ingresan los atributos del nuevo maestro
-            pstmt.setString(1, matricula);
-            pstmt.setString(2, nombre);
-            pstmt.setString(3, apellido);
+			// Crear un objeto PreparedStatement
+			PreparedStatement pstmt = cn.prepareStatement(consulta);
+			// En el objeto se ingresan los atributos del nuevo maestro
+			pstmt.setString(1, matricula);
+			pstmt.setString(2, nombre);
+			pstmt.setString(3, apellido);
 
-            // Ejecutar la consulta
-            int filasAfectadas = pstmt.executeUpdate();
-            if (filasAfectadas > 0) {
-                return("Maestro agregado con éxito.");
-            } else {
-                return("No se pudo agregar el profesor.");
-            }
+			// Ejecutar la consulta
+			int filasAfectadas = pstmt.executeUpdate();
+			if (filasAfectadas > 0) {
+				return ("Maestro agregado con éxito.");
+			} else {
+				return ("No se pudo agregar el profesor.");
+			}
 
-        } catch (SQLIntegrityConstraintViolationException e) {
+		} catch (SQLIntegrityConstraintViolationException e) {
 			conexion.desconectar(cn, stm, rs);
-            // Maneja la excepción de duplicación de clave primaria aquí
-            return("El maestro que intenta ingresar ya se encuentra registrado.");	
+			// Maneja la excepción de duplicación de clave primaria aquí
+			return ("El maestro que intenta ingresar ya se encuentra registrado.");
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			conexion.desconectar(cn, stm, rs);
 		}
 		return "";
 	}
 
+	// Metodo que elimina maestros de la base de datos si no estan en la base de
+	// datos manda el mensaje
 	public String eliminarMaestro(String matricula) throws SQLIntegrityConstraintViolationException {
 		Connection cn = null;
 		Statement stm = null;
@@ -122,45 +177,27 @@ public class Peticiones {
 			rs = stm.executeQuery("SELECT * FROM maestros");
 			String consulta = "DELETE FROM maestros WHERE Matricula = ?";
 
-		    // Crear un objeto PreparedStatement
-		    PreparedStatement pstmt = cn.prepareStatement(consulta);
-		    //En el objeto se ingresan los atributos del nuevo maestro
-            pstmt.setString(1, matricula);
+			// Crear un objeto PreparedStatement
+			PreparedStatement pstmt = cn.prepareStatement(consulta);
+			// En el objeto se ingresan los atributos del nuevo maestro
+			pstmt.setString(1, matricula);
 
-            // Ejecutar la consulta
-            int filasAfectadas = pstmt.executeUpdate();
-            if (filasAfectadas > 0) {
-                return "Maestro eliminado con éxito.";
-            } else {
-                return "No se pudo encontrar al maestro con la matrícula proporcionada.";
-            }
+			// Ejecutar la consulta
+			int filasAfectadas = pstmt.executeUpdate();
+			if (filasAfectadas > 0) {
+				return "Maestro eliminado con éxito.";
+			} else {
+				return "No se pudo encontrar al maestro con la matrícula proporcionada.";
+			}
 
 		} catch (SQLException e) {
-	        e.printStackTrace();
-	        return "Error al eliminar al maestro.";
-	    } finally {
-	    	conexion.desconectar(cn, stm, rs);
-	    }
+			e.printStackTrace();
+			return "Error al eliminar al maestro.";
+		} finally {
+			conexion.desconectar(cn, stm, rs);
+		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	public void PeticionesJdbc() {
 		Scanner sc = new Scanner(System.in);
 //		cn es una variable para representar la conexion a una base de datos

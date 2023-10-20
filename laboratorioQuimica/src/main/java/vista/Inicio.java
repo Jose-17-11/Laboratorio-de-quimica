@@ -21,7 +21,7 @@ public class Inicio extends JFrame {
 //		Textos label que diran el dato que se debe ingresar en los inputs
 	JLabel titulo, description, description2, denegado;
 //		Boton que al darle click hara una accion
-	JButton registrarEntrada, altaMaestro, deleteMaestro, updateMaestro, reporte;
+	JButton registrarEntrada, altaMaestro, deleteMaestro, reporte;
 
 //		Metodo principal que mostrara todo el formulario
 	public Inicio() {
@@ -100,16 +100,13 @@ public class Inicio extends JFrame {
 
 //		Boton que al darle click hara todas las acciones que se le indique
 		registrarEntrada = new JButton("Registrar entrada");
-		registrarEntrada.setBounds(220, 135, 150, 30);
+		registrarEntrada.setBounds(280, 135, 150, 30);
 
 		altaMaestro = new JButton("Nuevo maestro");
-		altaMaestro.setBounds(400, 135, 150, 30);
+		altaMaestro.setBounds(520, 135, 150, 30);
 
 		deleteMaestro = new JButton("Eliminar maestro");
-		deleteMaestro.setBounds(580, 135, 150, 30);
-
-		updateMaestro = new JButton("Actualizar informacion");
-		updateMaestro.setBounds(760, 135, 200, 30);
+		deleteMaestro.setBounds(760, 135, 150, 30);
 
 		description2 = new JLabel("Consultar el registro de accesos");
 		description2.setBounds(505, 200, 700, 100);
@@ -134,7 +131,6 @@ public class Inicio extends JFrame {
 		panel.add(registrarEntrada);
 		panel.add(altaMaestro);
 		panel.add(deleteMaestro);
-		panel.add(updateMaestro);
 		panel.add(description2);
 		panel.add(reporte);
 //		Color de fondo del panel
@@ -172,17 +168,6 @@ public class Inicio extends JFrame {
 				sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				sm.setVisible(true);
 				sm.setBounds(15, 0, 920, 400);
-			}
-		});
-
-		/******* Actualizar la informacion de algun maestro en especifico ***************/
-		updateMaestro.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ActualizarInfo sm = new ActualizarInfo();
-				sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				sm.setVisible(true);
-				sm.setBounds(15, 0, 1350, 600);
 			}
 		});
 

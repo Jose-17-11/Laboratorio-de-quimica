@@ -3,9 +3,12 @@ package vista;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLIntegrityConstraintViolationException;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import conexion_jdbc.Peticiones;
 import modelo.Profesor;
 
 	public class RegistrarMaestro extends JFrame{
@@ -89,12 +92,14 @@ import modelo.Profesor;
 	registrarEntrada.addActionListener(new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Profesor dates = new Profesor(text1.getText(), text2.getText());
-			if(dates.getGrupo().equals(text1.getText()) && dates.getGrupo().equals(text2.getText()) && dates.getMateria().equals(text3.getText())) {
-				exitosamente.setText("Se registraron los datos exitosamente");
-			}else {
-				
+			Peticiones acceso = new Peticiones();
+			try {
+				acceso.accesoLaboratorio(text1.getText(),text2.getText(),text3.getText(),text4.getText());
+			} catch (SQLIntegrityConstraintViolationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
+
 		}
 	});
 	}
