@@ -15,116 +15,108 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-import controlador.Filtros;
+import controlador.DatosAdmin;
 
+//Clase funcional con la base de datos, solo falta renombrar variables
 public class Inicio extends JFrame {
-//		Textos label que diran el dato que se debe ingresar en los inputs
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JLabel titulo, description, description2, denegado;
-//		Boton que al darle click hara una accion
 	JButton registrarEntrada, altaMaestro, deleteMaestro, reporte;
 
-//		Metodo principal que mostrara todo el formulario
 	public Inicio() {
-//		Encabezado de la ventana 
+		ImageIcon icono = new ImageIcon(
+				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
+		setIconImage(icono.getImage());
+		
 		setTitle("Administrador");
 		setResizable(false);
-
-		/*************************************************************************************************************************************/
-		/*******************************************
-		 * Panel Izquierdo y su contenido
-		 *******************************************/
-		JLabel nombre, apellido, matricula, correo;
+		/**********************************
+		 * Panel Izquierdo y su contenido *
+		 **********************************/
+		JLabel nombre, matricula, correo;
 		// Crear un panel en la izquierda con un color diferente
 		JPanel panelIzquierda = new JPanel();
-		panelIzquierda.setBounds(0, 0, 190, 800); // Ajusta las coordenadas y el tamaño según tus necesidades
-		panelIzquierda.setBackground(new Color(0, 56, 205)); // Establece el color del panel izquierdo
+		panelIzquierda.setBounds(0, 0, 240, 800);
+		panelIzquierda.setBackground(new Color(0, 56, 205));
 		panelIzquierda.setLayout(null); // Puedes utilizar otro layout si lo prefieres
 
-		// Agrega el panel izquierdo a la ventana
 		getContentPane().add(panelIzquierda);
 		JLabel imagenTecnm = new JLabel();
 		ImageIcon imagenIcon2 = new ImageIcon(
 				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\TecNM.png");
 		imagenTecnm.setIcon(imagenIcon2);
-		imagenTecnm.setBounds(2, 1, 185, 79);
+		imagenTecnm.setBounds(27, 7, 185, 79);
 
 		JLabel imagenAdmin = new JLabel();
 		ImageIcon imagenIcon3 = new ImageIcon(
 				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\Admin.png");
 		imagenAdmin.setIcon(imagenIcon3);
-		imagenAdmin.setBounds(2, 110, 185, 185);
-		
-		Filtros datos = new Filtros();
-		String name = datos.nombreMatricula(true);
+		imagenAdmin.setBounds(27, 110, 185, 185);
+
+		DatosAdmin datos = new DatosAdmin();
+		String name = datos.nombre();
 		nombre = new JLabel("Nombre: " + name);
-		nombre.setBounds(20, 280, 400, 100);
+		nombre.setBounds(10, 280, 400, 100);
 		nombre.setForeground(Color.WHITE);
 
-
-		apellido = new JLabel("Arias Hernandez");
-		apellido.setBounds(20, 300, 400, 100);
-		apellido.setForeground(Color.WHITE);
-		
-		String id = datos.nombreMatricula(false);
+		String id = datos.matricula();
 		matricula = new JLabel("Matricula: " + id);
-		matricula.setBounds(20, 330, 400, 100);
+		matricula.setBounds(10, 315, 400, 100);
 		matricula.setForeground(Color.WHITE);
 
-		correo = new JLabel("21680037@cuautla.tecnm.mx");
+		String email = datos.correo();
+		correo = new JLabel("correo: " + email);
 		correo.setBounds(10, 350, 400, 100);
 		correo.setForeground(Color.WHITE);
 
-		
 		panelIzquierda.add(nombre);
 		panelIzquierda.add(matricula);
-		panelIzquierda.add(apellido);
 		panelIzquierda.add(correo);
 		panelIzquierda.add(imagenTecnm);
 		panelIzquierda.add(imagenAdmin);
-		/*************************************************************************************************************************************/
 
-		/*******************************************
-		 * Panel Principal y su contenido
-		 *******************************************/
+		/*********************************
+		 * Contenido del panel principal *
+		 *********************************/
 
-//		Titulo Label descriptivo
 		titulo = new JLabel("Bienvenido");
-		titulo.setBounds(520, 0, 400, 100);
+		titulo.setBounds(570, 0, 400, 100);
 		titulo.setFont(new Font("Courier New", Font.BOLD, 16));
 		titulo.setForeground(Color.WHITE);
 
 		description = new JLabel("Seleccione la accion que necesite realizar");
-		description.setBounds(370, 60, 700, 100);
+		description.setBounds(420, 60, 700, 100);
 		description.setFont(new Font("Courier New", Font.BOLD, 16));
 		description.setForeground(Color.WHITE);
 
-//		Boton que al darle click hara todas las acciones que se le indique
 		registrarEntrada = new JButton("Registrar entrada");
-		registrarEntrada.setBounds(280, 135, 150, 30);
+		registrarEntrada.setBounds(320, 135, 150, 30);
 
 		altaMaestro = new JButton("Nuevo maestro");
-		altaMaestro.setBounds(520, 135, 150, 30);
+		altaMaestro.setBounds(550, 135, 150, 30);
 
 		deleteMaestro = new JButton("Eliminar maestro");
-		deleteMaestro.setBounds(760, 135, 150, 30);
+		deleteMaestro.setBounds(780, 135, 150, 30);
 
 		description2 = new JLabel("Consultar el registro de accesos");
-		description2.setBounds(505, 200, 700, 100);
+		description2.setBounds(535, 200, 700, 100);
 		description2.setForeground(Color.WHITE);
 		reporte = new JButton("Reporte de accesos");
-		reporte.setBounds(500, 265, 200, 30);
+		reporte.setBounds(530, 265, 200, 30);
 
 		denegado = new JLabel();
-		denegado.setBounds(220, 330, 400, 50);
+		denegado.setBounds(270, 330, 400, 50);
 		denegado.setForeground(Color.WHITE);
 
-//		Se generan los elementos que estaran visibles
+		/********************************
+		 * Creacion del panel principal *
+		 ********************************/
 		Container panel = getContentPane();
 		LineBorder borde = new LineBorder(Color.BLACK, 1);
 		((JComponent) panel).setBorder(borde);
-		ImageIcon icono = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
-		setIconImage(icono.getImage());
 		panel.setLayout(null);
 		panel.add(titulo);
 		panel.add(description);
@@ -135,15 +127,16 @@ public class Inicio extends JFrame {
 		panel.add(reporte);
 //		Color de fondo del panel
 		panel.setBackground(new Color(45, 45, 45));
-		/*************************************************************************************************************************************/
-		/*********************************************************
-		 * Conjunto de eventos que ocurren al precionar cualquier boton del menu
-		 **********************************************************/
+
+		/*************************************************************************
+		 * Conjunto de eventos que ocurren al precionar cualquier boton del menu *
+		 *************************************************************************/
+
 		/******* Registrar entrada de maestros a los laboratorios ***************/
 		registrarEntrada.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				RegistrarMaestro sm = new RegistrarMaestro();
+				RegistrarAccesoMaestros sm = new RegistrarAccesoMaestros();
 				sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				sm.setVisible(true);
 				sm.setBounds(200, 250, 1050, 400);
@@ -171,7 +164,9 @@ public class Inicio extends JFrame {
 			}
 		});
 
-		/******* Generar un reporte de todos los maestros de accedieron en la semana ***************/
+		/*******
+		 * Generar un reporte de todos los maestros de accedieron en la semana
+		 ***************/
 		reporte.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

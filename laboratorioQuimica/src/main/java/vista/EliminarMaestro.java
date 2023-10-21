@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-import conexion_jdbc.Peticiones;
+import modelo.PeticionesBD;
 
 import java.awt.Container;
 import java.awt.Font;
@@ -37,8 +37,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-
-import conexion_jdbc.Peticiones;
 //Clase completamente funcional con base de datos
 public class EliminarMaestro extends JFrame {
 	JLabel description, denegado, n1;
@@ -110,7 +108,7 @@ public class EliminarMaestro extends JFrame {
 		eliminar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Peticiones nuevoMaestro = new Peticiones();
+				PeticionesBD nuevoMaestro = new PeticionesBD();
 				try {
 					String aviso = nuevoMaestro.eliminarMaestro(text1.getText());
 					denegado.setText(aviso);

@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import conexion_jdbc.Peticiones;
+import modelo.PeticionesBD;
 
 public class Java1416 extends JPanel {
 	public Java1416() {

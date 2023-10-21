@@ -1,4 +1,4 @@
-package conexion_jdbc;
+package modelo;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -9,22 +9,20 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.time.LocalDateTime;
-import java.util.Scanner;
 
-public class Peticiones {
-	// Se crea la variable de tipo conexion
-	private Conexion conexion;
+public class PeticionesBD {
 
-	// El constructor de la clase crea el objeto conexion
-	public Peticiones() {
-		conexion = new Conexion();
+	private ConexionBD conexion;
+
+	// Conexion a la base de datos
+	public PeticionesBD() {
+		conexion = new ConexionBD();
 	}
 
-	/*
-	 * Este metodo booleano se encarga de hacer la peticion a la data base y con un
-	 * if verificar si los datos que ingreso el usuario son correctos o no
-	 */
-	public boolean verificarUsuario(String username, String password) {
+	/******************************
+	 * Metodo que valida el login *
+	 ******************************/
+	public boolean autenticacion(String username, String password) {
 		Connection cn = null;
 		Statement stm = null;
 		ResultSet rs = null;
@@ -35,9 +33,9 @@ public class Peticiones {
 			rs = stm.executeQuery("SELECT * FROM admin");
 
 			while (rs.next()) {
-				String usuario = rs.getString(2);
+				String user = rs.getString(2);
 				String pass = rs.getString(3);
-				if (usuario.equalsIgnoreCase(username) && pass.equals(pass))
+				if (user.equalsIgnoreCase(username) && pass.equals(password))
 					return true;
 			}
 		} catch (SQLException e) {
@@ -48,8 +46,10 @@ public class Peticiones {
 		return false;
 	}
 
-	// Comparacion de datos del login del administrador
-	public String datos(boolean option) {
+	/*************************************************
+	 * Metodo que extrae los datos del administrador *
+	 *************************************************/
+	public String datos(int i) {
 		Connection cn = null;
 		Statement stm = null;
 		ResultSet rs = null;
@@ -60,12 +60,16 @@ public class Peticiones {
 			rs = stm.executeQuery("SELECT * FROM admin");
 
 			while (rs.next()) {
-				String nombre = rs.getString(4);
 				String matricula = rs.getString(1);
-				if (option == true) {
-					return nombre;
-				} else {
+				String nombre = rs.getString(4);
+				String apellido = rs.getString(5);
+				String correo = rs.getString(6);
+				if (i == 0) {
+					return nombre + " " + apellido;
+				} else if (i == 1) {
 					return matricula;
+				} else {
+					return correo;
 				}
 			}
 		} catch (SQLException e) {
@@ -76,11 +80,38 @@ public class Peticiones {
 		return null;
 	}
 
-	public String accesoLaboratorio(String matricula, String salon, String grupo, String materia) throws SQLIntegrityConstraintViolationException {
-		/*************************** Fecha y Hora **********************************/
-		
+	/**********************************************************************************
+	 * Metodo que busca si un maestro esta en la base de datos en base a su
+	 * matricula *
+	 **********************************************************************************/
+	public boolean autenticacionMaestros(String matricula) {
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
 
-		/********************************************************************/
+		try {
+			cn = conexion.conectar();
+			stm = cn.createStatement();
+			rs = stm.executeQuery("SELECT * FROM maestros");
+
+			while (rs.next()) {
+				String user = rs.getString(1);
+				if (user.equalsIgnoreCase(matricula))
+					return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			conexion.desconectar(cn, stm, rs);
+		}
+		return false;
+	}
+
+	/************************************************************
+	 * Metodo que registra el acceso de maestros al laboratorio *
+	 ************************************************************/
+	public String accesoLaboratorio(String matricula, String salon, String grupo, String materia)
+			throws SQLIntegrityConstraintViolationException {
 
 		Connection cn = null;
 		Statement stm = null;
@@ -89,14 +120,14 @@ public class Peticiones {
 		try {
 			cn = conexion.conectar();
 			stm = cn.createStatement();
-			rs = stm.executeQuery("SELECT * FROM accesos");
-	        String consulta = "INSERT INTO accesos (fecha, hora, maestro, salon, grupo, materia) VALUES (?, ?, ?, ?, ?, ?)";
+
+			String consulta = "INSERT INTO accesos (fecha, hora, maestro, salon, grupo, materia) VALUES (?, ?, ?, ?, ?, ?)";
 			// Crear un objeto PreparedStatement
 			PreparedStatement pstmt = cn.prepareStatement(consulta);
 			// En el objeto se ingresan los atributos del nuevo maestro
 			LocalDateTime locaDate = LocalDateTime.now();
-	        Date fechaSQL = Date.valueOf(locaDate.toLocalDate());
-	        Time horaSQL = Time.valueOf(locaDate.toLocalTime());
+			Date fechaSQL = Date.valueOf(locaDate.toLocalDate());
+			Time horaSQL = Time.valueOf(locaDate.toLocalTime());
 			pstmt.setDate(1, fechaSQL);
 			pstmt.setTime(2, horaSQL);
 			pstmt.setString(3, matricula);
@@ -107,20 +138,17 @@ public class Peticiones {
 			// Ejecutar la consulta
 			int filasAfectadas = pstmt.executeUpdate();
 			if (filasAfectadas > 0) {
-				return ("Maestro agregado con éxito.");
+				return "Maestro agregado con éxito.";
 			} else {
-				return ("No se pudo agregar el profesor.");
+				return "No se pudo agregar el profesor.";
 			}
 
-		} catch (SQLIntegrityConstraintViolationException e) {
-	        // Maneja la excepción de duplicación de clave primaria aquí
-	        return "El maestro que intenta ingresar ya se encuentra registrado.";
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        conexion.desconectar(cn, stm, rs);
-	    }
-		return "";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "Ocurrió un error al registrar el profesor.";
+		} finally {
+			conexion.desconectar(cn, stm, rs);
+		}
 	}
 
 	// En este metodo se agregan maestros nuevo para darles acceso a los
@@ -199,7 +227,6 @@ public class Peticiones {
 	}
 
 	public void PeticionesJdbc() {
-		Scanner sc = new Scanner(System.in);
 //		cn es una variable para representar la conexion a una base de datos
 		Connection cn = null;
 //		La variable stagement sirve para poder enviar consultas a la base de datos para su ejecucion

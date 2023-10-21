@@ -1,4 +1,4 @@
-package conexion_jdbc;
+package modelo;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Conexion {
+public class ConexionBD {
 //	Se crean las constantes que almacenaran el controlador, url, usuario y contraseña
 	private static final String CONTROLADOR = "com.mysql.cj.jdbc.Driver";
 	private static final String URL = "jdbc:mysql://localhost:3306/Laboratorio_quimica";
