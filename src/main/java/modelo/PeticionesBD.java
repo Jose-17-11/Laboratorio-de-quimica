@@ -155,7 +155,7 @@ public class PeticionesBD {
 	/************************************************************
 	 * Metodo que registra el acceso de maestros al laboratorio *
 	 ************************************************************/
-	public String accesoLaboratorio(String matricula, String salon, int grupo, String materia)
+	public String accesoLaboratorio(String matricula, String salon, int grupo, String materia, String carrera)
 			throws SQLIntegrityConstraintViolationException {
 
 		Connection cn = null;
@@ -166,7 +166,7 @@ public class PeticionesBD {
 			cn = conexion.conectar();
 			stm = cn.createStatement();
 
-			String consulta = "INSERT INTO accesos (fecha, hora, maestro, salon, grupo, materia) VALUES (?, ?, ?, ?, ?, ?)";
+			String consulta = "INSERT INTO accesos (fecha, hora, maestro, salon, grupo, materia, carrera) VALUES (?, ?, ?, ?, ?, ?, ?)";
 			// Crear un objeto PreparedStatement
 			PreparedStatement pstmt = cn.prepareStatement(consulta);
 			// En el objeto se ingresan los atributos del nuevo maestro
@@ -179,6 +179,7 @@ public class PeticionesBD {
 			pstmt.setString(4, salon);
 			pstmt.setInt(5, grupo);
 			pstmt.setString(6, materia);
+			pstmt.setString(7, carrera);
 
 			// Ejecutar la consulta
 			int filasAfectadas = pstmt.executeUpdate();
@@ -209,7 +210,7 @@ public class PeticionesBD {
 			cn = conexion.conectar();
 			stm = cn.createStatement();
 			rs = stm.executeQuery("SELECT * FROM maestros");
-			String consulta = "INSERT INTO maestros (Matricula, nombre, apellido) VALUES (?, ?, ?)";
+			String consulta = "INSERT INTO maestros (matricula, nombre, apellido) VALUES (?, ?, ?)";
 
 			PreparedStatement pstmt = cn.prepareStatement(consulta);
 			pstmt.setString(1, matricula);

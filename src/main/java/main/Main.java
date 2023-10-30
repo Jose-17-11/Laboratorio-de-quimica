@@ -6,7 +6,7 @@ import vista.Login;
 
 public class Main {
 	/********************************************************
-	 * Metodo main que crea el frame principal 				*
+	 * Metodo main que crea el frame principal *
 	 ********************************************************/
 	public static void main(String[] args) {
 		Login sm = new Login();

@@ -140,7 +140,7 @@ public class Inicio extends JFrame {
 				RegistrarAccesoMaestros sm = new RegistrarAccesoMaestros();
 				sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				sm.setVisible(true);
-				sm.setBounds(200, 250, 1050, 400);
+				sm.setBounds(200, 250, 1250, 400);
 			}
 		});
 		/******* Agregar un nuevo maestro a la base de datos ***************/

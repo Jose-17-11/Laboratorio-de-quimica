@@ -9,10 +9,10 @@ import modelo.PeticionesBD;
  * *
  *********************************************************************************/
 public class RegistrarAccesoMaestro {
-	public void registro(String matricula, String salon, int grupo, String materia)
+	public void registro(String matricula, String salon, int grupo, String materia, String carrera)
 			throws SQLIntegrityConstraintViolationException {
 		PeticionesBD acceso = new PeticionesBD();
-		acceso.accesoLaboratorio(matricula, salon, grupo, materia);
+		acceso.accesoLaboratorio(matricula, salon, grupo, materia, carrera);
 
 	}
 
