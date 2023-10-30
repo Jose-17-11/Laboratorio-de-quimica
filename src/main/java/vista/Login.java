@@ -29,23 +29,23 @@ public class Login extends JFrame {
 	JTextField text1, text2;
 	JButton acceder;
 
+	String tecCuautla = Img.IMAGEN_1.getRuta();
+	String tecNM = Img.IMAGEN_2.getRuta();
+
 	// Metodo constructor principal que mostrara todo el formulario
 	public Login() {
-		ImageIcon icono = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
+		ImageIcon icono = new ImageIcon(tecCuautla);
 		setIconImage(icono.getImage());
 		setTitle("Login");
 		// Logo del tec de cuautla
 		JLabel imagenLabel = new JLabel();
-		ImageIcon imagenIcon = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
+		ImageIcon imagenIcon = new ImageIcon(tecCuautla);
 		imagenLabel.setIcon(imagenIcon);
 		imagenLabel.setBounds(75, 50, 100, 79);
 
 		// Logo del Instituto Tecnologico Nacional de Mexico
 		JLabel imagenLabel2 = new JLabel();
-		ImageIcon imagenIcon2 = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\TecNM.png");
+		ImageIcon imagenIcon2 = new ImageIcon(tecNM);
 		imagenLabel2.setIcon(imagenIcon2);
 		imagenLabel2.setBounds(500, 50, 190, 79);
 

@@ -26,9 +26,12 @@ public class Inicio extends JFrame {
 	JLabel titulo, description, description2, denegado;
 	JButton registrarEntrada, altaMaestro, deleteMaestro, reporte;
 
+	String tecCuautla = Img.IMAGEN_1.getRuta();
+	String tecNM = Img.IMAGEN_2.getRuta();
+	String admin = Img.IMAGEN_3.getRuta();
+
 	public Inicio() {
-		ImageIcon icono = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
+		ImageIcon icono = new ImageIcon(tecCuautla);
 		setIconImage(icono.getImage());
 		
 		setTitle("Administrador");
@@ -45,14 +48,12 @@ public class Inicio extends JFrame {
 
 		getContentPane().add(panelIzquierda);
 		JLabel imagenTecnm = new JLabel();
-		ImageIcon imagenIcon2 = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\TecNM.png");
+		ImageIcon imagenIcon2 = new ImageIcon(tecNM);
 		imagenTecnm.setIcon(imagenIcon2);
 		imagenTecnm.setBounds(27, 7, 185, 79);
 
 		JLabel imagenAdmin = new JLabel();
-		ImageIcon imagenIcon3 = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\Admin.png");
+		ImageIcon imagenIcon3 = new ImageIcon(admin);
 		imagenAdmin.setIcon(imagenIcon3);
 		imagenAdmin.setBounds(27, 110, 185, 185);
 

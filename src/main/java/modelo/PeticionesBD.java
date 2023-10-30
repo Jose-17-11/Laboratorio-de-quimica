@@ -8,11 +8,15 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PeticionesBD {
 
-	private ConexionBD conexion;
+	private static ConexionBD conexion;
 
 	// Conexion a la base de datos
 	public PeticionesBD() {
@@ -107,10 +111,51 @@ public class PeticionesBD {
 		return false;
 	}
 
+	/************************************************
+	 * Metodo que verifica si el salon esta ocupado *
+	 ************************************************/
+	public boolean peticionSalones(String salon) throws SQLIntegrityConstraintViolationException {
+
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
+
+		try {
+			cn = conexion.conectar();
+			stm = cn.createStatement();
+			rs = stm.executeQuery("SELECT * FROM accesos WHERE fecha = CURDATE();");
+			int i = 0;
+			LocalDateTime locaDate = LocalDateTime.now();
+			Time horaSQL = Time.valueOf(locaDate.toLocalTime());
+			while (rs.next()) {
+				Time hora = rs.getTime(2);
+				LocalTime horaBD = hora.toLocalTime();
+				LocalTime horaDB = horaSQL.toLocalTime();
+				// Calcula la diferencia entre las horas
+				Duration duration = Duration.between(horaBD, horaDB);
+
+				long minutos = duration.toMinutes();
+
+				String laboratorio = rs.getString(4);
+				if (laboratorio.equals(salon) && minutos <= 50) {
+					i++;
+				}
+			}
+			if(i==0) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			conexion.desconectar(cn, stm, rs);
+		}
+		return false;
+	}
+
 	/************************************************************
 	 * Metodo que registra el acceso de maestros al laboratorio *
 	 ************************************************************/
-	public String accesoLaboratorio(String matricula, String salon, String grupo, String materia)
+	public String accesoLaboratorio(String matricula, String salon, int grupo, String materia)
 			throws SQLIntegrityConstraintViolationException {
 
 		Connection cn = null;
@@ -132,7 +177,7 @@ public class PeticionesBD {
 			pstmt.setTime(2, horaSQL);
 			pstmt.setString(3, matricula);
 			pstmt.setString(4, salon);
-			pstmt.setString(5, grupo);
+			pstmt.setInt(5, grupo);
 			pstmt.setString(6, materia);
 
 			// Ejecutar la consulta
@@ -151,8 +196,9 @@ public class PeticionesBD {
 		}
 	}
 
-	// En este metodo se agregan maestros nuevo para darles acceso a los
-	// laboratorios de quimica
+	/*********************************************************
+	 * Metodo que agrega un nuevo maestro a la base de datos *
+	 *********************************************************/
 	public String nuevoMaestro(String matricula, String nombre, String apellido)
 			throws SQLIntegrityConstraintViolationException {
 		Connection cn = null;
@@ -165,14 +211,11 @@ public class PeticionesBD {
 			rs = stm.executeQuery("SELECT * FROM maestros");
 			String consulta = "INSERT INTO maestros (Matricula, nombre, apellido) VALUES (?, ?, ?)";
 
-			// Crear un objeto PreparedStatement
 			PreparedStatement pstmt = cn.prepareStatement(consulta);
-			// En el objeto se ingresan los atributos del nuevo maestro
 			pstmt.setString(1, matricula);
 			pstmt.setString(2, nombre);
 			pstmt.setString(3, apellido);
 
-			// Ejecutar la consulta
 			int filasAfectadas = pstmt.executeUpdate();
 			if (filasAfectadas > 0) {
 				return ("Maestro agregado con éxito.");
@@ -182,7 +225,6 @@ public class PeticionesBD {
 
 		} catch (SQLIntegrityConstraintViolationException e) {
 			conexion.desconectar(cn, stm, rs);
-			// Maneja la excepción de duplicación de clave primaria aquí
 			return ("El maestro que intenta ingresar ya se encuentra registrado.");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -192,8 +234,9 @@ public class PeticionesBD {
 		return "";
 	}
 
-	// Metodo que elimina maestros de la base de datos si no estan en la base de
-	// datos manda el mensaje
+	/*****************************************************
+	 * Metodo que elimina un maestro de la base de datos *
+	 *****************************************************/
 	public String eliminarMaestro(String matricula) throws SQLIntegrityConstraintViolationException {
 		Connection cn = null;
 		Statement stm = null;
@@ -205,12 +248,9 @@ public class PeticionesBD {
 			rs = stm.executeQuery("SELECT * FROM maestros");
 			String consulta = "DELETE FROM maestros WHERE Matricula = ?";
 
-			// Crear un objeto PreparedStatement
 			PreparedStatement pstmt = cn.prepareStatement(consulta);
-			// En el objeto se ingresan los atributos del nuevo maestro
 			pstmt.setString(1, matricula);
 
-			// Ejecutar la consulta
 			int filasAfectadas = pstmt.executeUpdate();
 			if (filasAfectadas > 0) {
 				return "Maestro eliminado con éxito.";
@@ -224,6 +264,30 @@ public class PeticionesBD {
 		} finally {
 			conexion.desconectar(cn, stm, rs);
 		}
+	}
+
+	public static List<String> obtenerMaestrosDesdeBaseDeDatos() {
+		List<String> maestros = new ArrayList<>();
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
+
+		try {
+			cn = conexion.conectar();
+			stm = cn.createStatement();
+			rs = stm.executeQuery("SELECT * FROM maestros");
+
+			while (rs.next()) {
+				String matricula = rs.getString(1);
+				maestros.add(matricula);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			conexion.desconectar(cn, stm, rs);
+		}
+
+		return maestros;
 	}
 
 	public void PeticionesJdbc() {
@@ -298,4 +362,5 @@ public class PeticionesBD {
 //
 //        return listaDatos;
 //    }
+
 }

@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import controlador.AgregarNuevoMaestro;
+import controlador.Errores;
 
 //Clase funcional con la base de datos, solo falta renombrar variables
 public class NuevoMaestro extends JFrame {
@@ -27,23 +28,23 @@ public class NuevoMaestro extends JFrame {
 	JTextField text1, text2, text3, text4;
 	JButton crear;
 
+	String tecCuautla = Img.IMAGEN_1.getRuta();
+	String tecNM = Img.IMAGEN_2.getRuta();
+	
 	public NuevoMaestro() {
-		ImageIcon icono = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
+		ImageIcon icono = new ImageIcon(tecCuautla);
 		setIconImage(icono.getImage());
 
 		setTitle("Administrador");
 		setResizable(false);
 
 		JLabel imagenLabel = new JLabel();
-		ImageIcon imagenIcon = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
+		ImageIcon imagenIcon = new ImageIcon(tecCuautla);
 		imagenLabel.setIcon(imagenIcon);
 		imagenLabel.setBounds(50, 50, 100, 79);
 
 		JLabel imagenLabel2 = new JLabel();
-		ImageIcon imagenIcon2 = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\TecNM.png");
+		ImageIcon imagenIcon2 = new ImageIcon(tecNM);
 		imagenLabel2.setIcon(imagenIcon2);
 		imagenLabel2.setBounds(860, 50, 190, 79);
 
@@ -108,15 +109,21 @@ public class NuevoMaestro extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				AgregarNuevoMaestro nuevoMaestro = new AgregarNuevoMaestro();
 				try {
-					boolean agregar = nuevoMaestro.registroNuevoMaestro(text1.getText(), text2.getText(),
-							text3.getText());
-					if (agregar) {
-						denegado.setText("El maestro se a registrado exitosamente.");
-					} else {
-						denegado.setText("El maestro ya se encuentra registrado.");
+					Errores error = new Errores();
+					if(error.datosVacios(text1.getText()) &&  error.datosVacios(text2.getText()) && error.datosVacios(text3.getText())) {
+						boolean agregar = nuevoMaestro.registroNuevoMaestro(text1.getText(), text2.getText(),
+								text3.getText());
+						if (agregar) {
+							denegado.setText("El maestro se a registrado exitosamente.");
+						} else {
+							denegado.setText("El maestro ya se encuentra registrado.");
+						}
+					}else {
+						denegado.setText("No puede dejar los campos vacios.");
 					}
+					
 				} catch (SQLIntegrityConstraintViolationException e1) {
-					denegado.setText("El maestro que intenta ingresar ya se encuentra registrado.");
+					denegado.setText("Error inesperado.");
 				}
 
 			}

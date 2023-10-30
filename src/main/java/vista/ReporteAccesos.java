@@ -23,6 +23,9 @@ public class ReporteAccesos extends JFrame {
 
 	private JTable table;
 	private DefaultTableModel tableModel;
+	
+	String tecCuautla = Img.IMAGEN_1.getRuta();
+	String tecNM = Img.IMAGEN_2.getRuta();
 
 	public ReporteAccesos() {
 //		Encabezado de la ventana 
@@ -48,15 +51,13 @@ public class ReporteAccesos extends JFrame {
 
 		JLabel imagenLabel = new JLabel();// Se crea el label que almacenara el logo del tec de cuautla
 //		Se crea el objeto de tipo imagen pasandole la direccion de donde se encuentra la imagen a utilizar
-		ImageIcon imagenIcon = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
+		ImageIcon imagenIcon = new ImageIcon(tecCuautla);
 		imagenLabel.setIcon(imagenIcon);// Se le pasa de parametro al label el objeto que contiene a la imagen a
 										// utilizar
 		imagenLabel.setBounds(100, 50, 100, 79);// Se definen las dimenciones de la posicion y el tamaño de la imagen
 
 		JLabel imagenLabel2 = new JLabel();
-		ImageIcon imagenIcon2 = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\TecNM.png");
+		ImageIcon imagenIcon2 = new ImageIcon(tecNM);
 		imagenLabel2.setIcon(imagenIcon2);
 		imagenLabel2.setBounds(1060, 50, 190, 79);
 
@@ -76,8 +77,7 @@ public class ReporteAccesos extends JFrame {
 		Container panel = getContentPane();
 		LineBorder borde = new LineBorder(Color.BLACK, 1);
 		((JComponent) panel).setBorder(borde);
-		ImageIcon icono = new ImageIcon(
-				"C:\\Users\\Jose\\git\\laboratorioQuimica\\laboratorioQuimica\\src\\main\\resources\\img\\tecCuautla.png");
+		ImageIcon icono = new ImageIcon(tecCuautla);
 		setIconImage(icono.getImage());
 		panel.setLayout(null);
 		panel.add(imagenLabel);
