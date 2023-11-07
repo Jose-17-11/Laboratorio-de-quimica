@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import controlador.DatosAdmin;
+import modelo.Administrador;
 
 //Clase funcional con la base de datos, solo falta renombrar variables
 public class Inicio extends JFrame {
@@ -57,18 +58,20 @@ public class Inicio extends JFrame {
 		imagenAdmin.setIcon(imagenIcon3);
 		imagenAdmin.setBounds(27, 110, 185, 185);
 
-		DatosAdmin datos = new DatosAdmin();
-		String name = datos.nombre();
+		DatosAdmin admin = new DatosAdmin();
+		Administrador datosAdmin = admin.admin();
+		
+		String name = datosAdmin.getNombre();
 		nombre = new JLabel("Nombre: " + name);
 		nombre.setBounds(10, 280, 400, 100);
 		nombre.setForeground(Color.WHITE);
 
-		String id = datos.matricula();
+		int id = datosAdmin.getId();
 		matricula = new JLabel("Matricula: " + id);
 		matricula.setBounds(10, 315, 400, 100);
 		matricula.setForeground(Color.WHITE);
 
-		String email = datos.correo();
+		String email = datosAdmin.getCorreo();
 		correo = new JLabel("correo: " + email);
 		correo.setBounds(10, 350, 400, 100);
 		correo.setForeground(Color.WHITE);

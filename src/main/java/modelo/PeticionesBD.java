@@ -53,7 +53,7 @@ public class PeticionesBD {
 	/*************************************************
 	 * Metodo que extrae los datos del administrador *
 	 *************************************************/
-	public String datos(int i) {
+	public Administrador datos() {
 		Connection cn = null;
 		Statement stm = null;
 		ResultSet rs = null;
@@ -63,19 +63,54 @@ public class PeticionesBD {
 			stm = cn.createStatement();
 			rs = stm.executeQuery("SELECT * FROM admin");
 
-			while (rs.next()) {
-				String matricula = rs.getString(1);
+			if (rs.next()) {
+				int matricula = rs.getInt(1);
 				String nombre = rs.getString(4);
-				String apellido = rs.getString(5);
 				String correo = rs.getString(6);
-				if (i == 0) {
-					return nombre + " " + apellido;
-				} else if (i == 1) {
-					return matricula;
-				} else {
-					return correo;
-				}
+				return new Administrador(matricula, nombre, correo);
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			conexion.desconectar(cn, stm, rs);
+		}
+		return null;
+	}
+
+	public List<String[]> accesos() {
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
+
+		try {
+			cn = conexion.conectar();
+			stm = cn.createStatement();
+			rs = stm.executeQuery("SELECT * FROM `accesos` WHERE fecha BETWEEN '2023-10-30' AND '2023-11-04'");
+
+			List<String[]> listaDatos = new ArrayList<>();
+			while (rs.next()) {
+				String fecha = rs.getString(1);
+				String hora = rs.getString(2);
+				String maestro = rs.getString(3);
+				String salon = rs.getString(4);
+				String grupo = rs.getString(5);
+				String materia = rs.getString(6);
+				String carrera = rs.getString(7);
+
+//				System.out.println(fecha + " " + hora + " " + maestro + " " + salon + " " + grupo + " " + materia + " " + carrera);
+				String tabla[] = { fecha, hora, maestro, salon, grupo, materia, carrera };
+
+				// Agregar el array tabla a la lista
+				listaDatos.add(tabla);
+//				if (i == 0) {
+//					return nombre + " " + apellido;
+//				} else if (i == 1) {
+//					return matricula;
+//				} else {
+//					return correo;
+//				}
+			}
+			return listaDatos;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -141,7 +176,7 @@ public class PeticionesBD {
 					i++;
 				}
 			}
-			if(i==0) {
+			if (i == 0) {
 				return true;
 			}
 		} catch (SQLException e) {

@@ -15,6 +15,7 @@ import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import modelo.PeticionesBD;
 import pruebas.Java1416;
 
 public class ReporteAccesos extends JFrame {
@@ -37,7 +38,7 @@ public class ReporteAccesos extends JFrame {
 		 *******************************************/
 		JPanel panelTable = new JPanel();
 		panelTable.setBounds(340, 150, 600, 300); // Ajusta las coordenadas y el tamaño según tus necesidades
-		panelTable.setBackground(new Color(0, 56, 205)); // Establece el color del panel
+		panelTable.setBackground(new Color(0, 0, 0)); // Establece el color del panel
 		panelTable.setLayout(new BorderLayout()); // Puedes utilizar otro layout si lo prefieres
 
 		// Agrega el panel a la ventana
@@ -61,7 +62,7 @@ public class ReporteAccesos extends JFrame {
 		imagenLabel2.setIcon(imagenIcon2);
 		imagenLabel2.setBounds(1060, 50, 190, 79);
 
-		description = new JLabel("Ingrese los datos del profesor");
+		description = new JLabel("Seleccione la accion que desea realizar");
 		description.setBounds(475, 35, 700, 100);
 		description.setFont(new Font("Courier New", Font.BOLD, 16));
 		description.setForeground(Color.WHITE);
