@@ -13,7 +13,7 @@ public class ConexionBD {
 	private static final String USUARIO = "root";
 	private static final String CLAVE = "1q2w3e4r5t0p9o8i7u6y";
 	
-	static {
+	  static {
 		try {
 //			Se ingresa el controlador
 			Class.forName(CONTROLADOR);

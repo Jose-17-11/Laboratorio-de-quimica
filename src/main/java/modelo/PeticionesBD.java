@@ -77,7 +77,7 @@ public class PeticionesBD {
 		return null;
 	}
 
-	public List<String[]> accesos() {
+	public List<String[]> accesos(int i) {
 		Connection cn = null;
 		Statement stm = null;
 		ResultSet rs = null;
@@ -85,7 +85,21 @@ public class PeticionesBD {
 		try {
 			cn = conexion.conectar();
 			stm = cn.createStatement();
-			rs = stm.executeQuery("SELECT * FROM `accesos` WHERE fecha BETWEEN '2023-10-30' AND '2023-11-04'");
+			if(i == 1) {
+				rs = stm.executeQuery("SELECT * FROM `accesos` WHERE fecha BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())");				
+			}else if(i == 2){
+				rs = stm.executeQuery("SELECT * " +
+                        "FROM accesos " +
+                        "WHERE fecha BETWEEN " +
+                        "DATE_ADD(CURDATE(), INTERVAL 0 - WEEKDAY(CURDATE()) DAY) " + 
+                        "AND DATE_ADD(CURDATE(), INTERVAL 4 - WEEKDAY(CURDATE()) DAY)");				
+			}else if(i == 3) {
+				rs = stm.executeQuery("SELECT * " +
+                        "FROM accesos " +
+                        "WHERE DATE(fecha) = CURDATE()");				
+			}else {
+				rs = stm.executeQuery("SELECT * FROM accesos");				
+			}
 
 			List<String[]> listaDatos = new ArrayList<>();
 			while (rs.next()) {

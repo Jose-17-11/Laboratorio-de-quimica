@@ -1,38 +1,46 @@
 package pruebas;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import modelo.PeticionesBD;
 
 // El Modelo de la Tabla es el que controla todos los
 // datos que se colocan en ella
-class ModeloDatos extends AbstractTableModel {
+public class ModeloDatos extends AbstractTableModel {
+	int i;
 	String[] columnNames = { "fecha", "hora", "maestro", "salon", "grupo", "materia", "carrera"};
-
-	Object datos[][] = { { "uno", "dos", "tres", "cuatro", "eewd" }, { "cinco", "seis", "siete", "ocho", "eewd" }, };
 	PeticionesBD accesos = new PeticionesBD();
-	List<String[]> listaDatos = accesos.accesos(); // Obtener la lista desde PeticionesBD
+	List<String[]> listaDatos = accesos.accesos(i); // Obtener la lista desde PeticionesBD;
 
 	// Esta clase imprime los datos en la consola cada vez
 	// que se produce un cambio en cualquiera de las
 	// casillas de la tabla
 	class TablaListener implements TableModelListener {
 		public void tableChanged(TableModelEvent evt) {
-			for (int i = 0; i < datos.length; i++) {
-				for (int j = 0; j < datos[0].length; j++)
-					System.out.print(datos[i][j] + " ");
-				System.out.println();
-			}
 		}
 	}
 
 	// Constructor
-    ModeloDatos() {
+    public ModeloDatos(int i) {
         addTableModelListener(new TablaListener());
+        this.i = i;
+        this.accesos = new PeticionesBD();
+        this.listaDatos = accesos.accesos(i);
     }
 
     public int getColumnCount() {
@@ -68,4 +76,44 @@ class ModeloDatos extends AbstractTableModel {
     public String getColumnName(int column) {
         return columnNames[column];
     }
+    
+    public List<String[]> getListaDatos() {
+		return listaDatos;
+	}
+    
+    public void excel(int i) throws FileNotFoundException, IOException{
+        // Obtener la fecha y hora actual
+        LocalDateTime ahora = LocalDateTime.now();
+
+        // Formatear la fecha y hora como una cadena para usar en el nombre del archivo
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String marcaDeTiempo = ahora.format(formatter);
+
+        // Construir el nombre del archivo con la fecha y hora actual
+        String nombreArchivo = "C:/Users/Jose Manuel/OneDrive/Desktop/reporte_" + marcaDeTiempo + ".xlsx";
+
+		Workbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet("MiHojaDeCalculo");
+		ModeloDatos modelo = new ModeloDatos(i);
+		// Ejemplo de datos de una tabla (puedes reemplazarlo con tus propios datos)
+		List<String[]> data = modelo.getListaDatos();
+		
+		int rowNum = 0;
+		for (String[] rowData : data) {
+		    Row row = sheet.createRow(rowNum++);
+		    int colNum = 0;
+		    for (String cellData : rowData) {
+		        Cell cell = row.createCell(colNum++);
+		        cell.setCellValue(cellData);
+		    }
+		}
+		try (FileOutputStream outputStream = new FileOutputStream(nombreArchivo)) {
+
+            workbook.write(outputStream);
+            System.out.println("Archivo Excel generado correctamente: " + nombreArchivo);
+		}
+		workbook.close();
+	}
+    
+    
 }

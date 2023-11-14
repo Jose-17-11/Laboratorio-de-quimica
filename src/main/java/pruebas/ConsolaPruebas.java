@@ -6,6 +6,6 @@ public class ConsolaPruebas {
 
 	public static void main(String[] args) {
 		PeticionesBD accesos = new PeticionesBD();
-		accesos.accesos();
+		accesos.accesos(1);
 	}
 }
