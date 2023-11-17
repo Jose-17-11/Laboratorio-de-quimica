@@ -30,7 +30,8 @@ public class RegistrarAccesoMaestros extends JFrame {
 	private static final long serialVersionUID = 1L;
 	JLabel description, exitosamente, n1, n2, n3, n4, n5;
 	JTextField text1;
-	JButton registrarEntrada;
+	JButton registrarEntrada, liberarLab;
+	int i = 0;
 
 	String tecCuautla = Img.IMAGEN_1.getRuta();
 	
@@ -78,7 +79,9 @@ public class RegistrarAccesoMaestros extends JFrame {
 		n5.setBounds(980, 80, 200, 100);
 		n5.setForeground(Color.WHITE);
 		carreras.setBounds(900, 150, 200, 30);
-
+		
+		liberarLab = new JButton("Registrar entrada");
+		liberarLab.setBounds(980, 250, 150, 30);
 		// Centra el JComboBox mediante renderizado
 		DefaultListCellRenderer renderer = new DefaultListCellRenderer() {
 			@Override
@@ -124,6 +127,7 @@ public class RegistrarAccesoMaestros extends JFrame {
 		panel.add(carreras);
 		panel.add(exitosamente);
 		panel.add(registrarEntrada);
+		panel.add(liberarLab);
 		panel.setBackground(new Color(45, 45, 45));
 
 		/*********************************************************
@@ -134,14 +138,16 @@ public class RegistrarAccesoMaestros extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				RegistrarAccesoMaestro acceso = new RegistrarAccesoMaestro();
 				try {
-
 					String salon = (String) laboratorio.getSelectedItem();
 					int grupo = Integer.parseInt((String) group.getSelectedItem());
 					String materia = (String) materias.getSelectedItem();
 					String carrera = (String) carreras.getSelectedItem();
 
 					boolean maestro = acceso.buscarMaestro(text1.getText());
-					boolean laboratorio = acceso.buscarSalon(salon);
+					boolean laboratorio = acceso.buscarSalon(salon, i);
+
+					System.out.println(laboratorio);
+					System.out.println(i);
 					
 					if (maestro && laboratorio) {
 						acceso.registro(text1.getText(), salon, grupo, materia, carrera);
@@ -156,6 +162,13 @@ public class RegistrarAccesoMaestros extends JFrame {
 					e1.printStackTrace();
 				}
 
+			}
+		});
+		
+		liberarLab.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				i = 1;
 			}
 		});
 	}

@@ -24,11 +24,14 @@ public class RegistrarAccesoMaestro {
 		return false;
 	}
 
-	public boolean buscarSalon(String salon) throws SQLIntegrityConstraintViolationException {
+	public boolean buscarSalon(String salon, int i) throws SQLIntegrityConstraintViolationException {
 		PeticionesBD busqueda = new PeticionesBD();
-		if (busqueda.peticionSalones(salon)) {
+		boolean active = busqueda.peticionSalones(salon);
+		System.out.println("Active es: " + active);
+		if (active || i == 1) {
 			return true;
-		}
+		} else {
 		return false;
+		}
 	}
 }
