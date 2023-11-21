@@ -18,10 +18,13 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import controlador.EliminarMaestros;
-import modelo.PeticionesBD;
 
 //Clase completamente funcional con base de datos
 public class EliminarMaestro extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JLabel description, denegado, n1;
 	JTextField text1;
 	JButton eliminar;
@@ -57,17 +60,15 @@ public class EliminarMaestro extends JFrame {
 		n1 = new JLabel("Matricula");
 		n1.setBounds(395, 110, 200, 100);
 		n1.setForeground(Color.WHITE);
-//		text1 = new JTextField(10);
-//		text1.setBounds(317, 170, 220, 30);
 		List<String> maestros = EliminarMaestros.obtenerMaestros();
 		JComboBox<String> comboBox = new JComboBox<>(maestros.toArray(new String[0]));
 		comboBox.setBounds(317, 170, 220, 30);
-		
+
 		eliminar = new JButton("Eliminar");
 		eliminar.setBounds(325, 250, 200, 30);
 
 		denegado = new JLabel();
-		denegado.setBounds(220, 300, 400, 50);
+		denegado.setBounds(310, 300, 400, 50);
 		denegado.setForeground(Color.WHITE);
 
 		/********************************************************
@@ -93,15 +94,14 @@ public class EliminarMaestro extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				EliminarMaestros borrar = new EliminarMaestros();
-				
 				boolean autenticacion;
 				try {
 					String eliminar = (String) comboBox.getSelectedItem();
 					autenticacion = borrar.eliminar(eliminar);
-					if(autenticacion) {
+					if (autenticacion) {
 						denegado.setText("El maestro a sido eliminado exitosamente.");
-					}else {
-						denegado.setText("El maestro no se puede eliminar.");
+					} else {
+						denegado.setText("El maestro no se encuentra registrado.");
 					}
 				} catch (SQLIntegrityConstraintViolationException e1) {
 					denegado.setText("Error inesperado.");

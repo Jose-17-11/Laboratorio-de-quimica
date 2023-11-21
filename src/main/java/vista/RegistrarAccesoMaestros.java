@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -20,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+import controlador.EliminarMaestros;
 import controlador.RegistrarAccesoMaestro;
 
 //Clase funcional con la base de datos, solo falta renombrar variables
@@ -28,61 +30,81 @@ public class RegistrarAccesoMaestros extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	JLabel description, exitosamente, n1, n2, n3, n4, n5;
+	JLabel description, exitosamente, liberadoL, n1, n2, n3, n4, n5;
 	JTextField text1;
 	JButton registrarEntrada, liberarLab;
 	int i = 0;
 
 	String tecCuautla = Img.IMAGEN_1.getRuta();
-	
+
 	public RegistrarAccesoMaestros() {
 		ImageIcon icono = new ImageIcon(tecCuautla);
 
 		setTitle("Registro de accesos");
 		setResizable(false);
 
-		/***********************
-		 * Contenido del panel *
-		 ***********************/
+		/************************************************************
+		 * Contenido de listas a seleccionar para hacer el registro *
+		 ************************************************************/
 		description = new JLabel("Registre los datos del maestro que ingresara al laboratorio.");
-		description.setBounds(220, 0, 700, 100);
+		description.setBounds(300, 0, 700, 100);
 		description.setFont(new Font("Courier New", Font.BOLD, 16));
 		description.setForeground(Color.WHITE);
 
 		n1 = new JLabel("Matricula");
 		n1.setBounds(105, 80, 200, 100);
 		n1.setForeground(Color.WHITE);
-		text1 = new JTextField(10);
-		text1.setBounds(50, 150, 150, 30);
+		List<String> maestros = EliminarMaestros.obtenerMaestros();
+		JComboBox<String> matricula = new JComboBox<>(maestros.toArray(new String[0]));
+		matricula.setBounds(70, 150, 150, 30);
 
-		JComboBox<String> laboratorio = new JComboBox<>(
-				new String[] { "I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8" });
 		n2 = new JLabel("Salon");
 		n2.setBounds(335, 80, 200, 100);
 		n2.setForeground(Color.WHITE);
+		JComboBox<String> laboratorio = new JComboBox<>(
+				new String[] { "I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8" });
 		laboratorio.setBounds(300, 150, 100, 30);
 
-		JComboBox<String> group = new JComboBox<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8" });
 		n3 = new JLabel("Grupo");
 		n3.setBounds(535, 80, 200, 100);
 		n3.setForeground(Color.WHITE);
+		JComboBox<String> group = new JComboBox<>(
+				new String[] { "1", "2", "3", "4", "5", "6", "7", "8" });
 		group.setBounds(500, 150, 100, 30);
 
-		JComboBox<String> materias = new JComboBox<>(new String[] { "quimica", "fisica", "biologia" });
 		n4 = new JLabel("Materia");
 		n4.setBounds(730, 80, 200, 100);
 		n4.setForeground(Color.WHITE);
+		JComboBox<String> materias = new JComboBox<>(
+				new String[] { "quimica", "fisica" });
 		materias.setBounds(700, 150, 100, 30);
-		
-		JComboBox<String> carreras = new JComboBox<>(new String[] { "Sistemas Computacionales", "Mecatronica", "Electricos", "Industrial" });
+
 		n5 = new JLabel("Carrera");
 		n5.setBounds(980, 80, 200, 100);
 		n5.setForeground(Color.WHITE);
+		JComboBox<String> carreras = new JComboBox<>(
+				new String[] { "Sistemas Computacionales", "Mecatronica", "Electrónica", "Industrial", "Cívil" });
 		carreras.setBounds(900, 150, 200, 30);
 		
-		liberarLab = new JButton("Registrar entrada");
+
+		/******************************************************************
+		 * Botones para registrar accesos y liberar laboratorios ocupados *
+		 ******************************************************************/
+		registrarEntrada = new JButton("Registrar entrada");
+		registrarEntrada.setBounds(475, 250, 150, 30);
+		exitosamente = new JLabel(" ");
+		exitosamente.setBounds(475, 280, 400, 50);
+		exitosamente.setForeground(Color.WHITE);
+
+		liberarLab = new JButton("Liberar laboratorio");
 		liberarLab.setBounds(980, 250, 150, 30);
-		// Centra el JComboBox mediante renderizado
+		liberadoL = new JLabel(" ");
+		liberadoL.setBounds(990, 280, 400, 50);
+		liberadoL.setForeground(Color.WHITE);
+
+		/*******************************************************************
+		 * Evento del boton para centrar el JComboBox mediante renderizado *
+		 *******************************************************************/
 		DefaultListCellRenderer renderer = new DefaultListCellRenderer() {
 			@Override
 			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
@@ -93,17 +115,12 @@ public class RegistrarAccesoMaestros extends JFrame {
 				return label;
 			}
 		};
+		matricula.setRenderer(renderer);
 		laboratorio.setRenderer(renderer);
 		group.setRenderer(renderer);
 		materias.setRenderer(renderer);
 		carreras.setRenderer(renderer);
 
-		registrarEntrada = new JButton("Registrar entrada");
-		registrarEntrada.setBounds(450, 250, 150, 30);
-
-		exitosamente = new JLabel("El maestro no esta dado de alta.");
-		exitosamente.setBounds(425, 280, 400, 50);
-		exitosamente.setForeground(Color.WHITE);
 
 		Container panel = getContentPane();
 		LineBorder borde = new LineBorder(Color.BLACK, 1);
@@ -120,12 +137,13 @@ public class RegistrarAccesoMaestros extends JFrame {
 		panel.add(n3);
 		panel.add(n4);
 		panel.add(n5);
-		panel.add(text1);
+		panel.add(matricula);
 		panel.add(laboratorio);
 		panel.add(group);
 		panel.add(materias);
 		panel.add(carreras);
 		panel.add(exitosamente);
+		panel.add(liberadoL);
 		panel.add(registrarEntrada);
 		panel.add(liberarLab);
 		panel.setBackground(new Color(45, 45, 45));
@@ -137,23 +155,25 @@ public class RegistrarAccesoMaestros extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				RegistrarAccesoMaestro acceso = new RegistrarAccesoMaestro();
+				
 				try {
+					String matriculaM = (String) matricula.getSelectedItem();
 					String salon = (String) laboratorio.getSelectedItem();
 					int grupo = Integer.parseInt((String) group.getSelectedItem());
 					String materia = (String) materias.getSelectedItem();
 					String carrera = (String) carreras.getSelectedItem();
-
-					boolean maestro = acceso.buscarMaestro(text1.getText());
+					
+					
+					boolean maestro = acceso.buscarMaestro(matriculaM);
 					boolean laboratorio = acceso.buscarSalon(salon, i);
 
-					System.out.println(laboratorio);
-					System.out.println(i);
-					
 					if (maestro && laboratorio) {
-						acceso.registro(text1.getText(), salon, grupo, materia, carrera);
+						acceso.registro(matriculaM, salon, grupo, materia, carrera);
 						exitosamente.setText("El maestro se registro exitosamente.");
+						liberadoL.setText(" " );
+						i = 0;
 					} else if (!laboratorio) {
-						exitosamente.setText("El laboratorio esta ocupado.");
+						exitosamente.setText("El laboratorio " + salon + " esta ocupado.");
 					} else {
 						exitosamente.setText("El maestro no esta dado de alta.");
 					}
@@ -164,19 +184,15 @@ public class RegistrarAccesoMaestros extends JFrame {
 
 			}
 		});
-		
+		/********************************************************************************
+		 * Evento del boton para liberar laboratorio y se pueda acceder a el nuevamente *
+		 ********************************************************************************/
 		liberarLab.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				i = 1;
+				liberadoL.setText("laboratorio " + (String) laboratorio.getSelectedItem() + " liberado" );
 			}
 		});
 	}
-	
-//	public static void main(String[] args) {
-//		RegistrarAccesoMaestros sm = new RegistrarAccesoMaestros();
-//		sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//		sm.setVisible(true);
-//		sm.setBounds(50, 250, 1170, 400);
-//	}
 }

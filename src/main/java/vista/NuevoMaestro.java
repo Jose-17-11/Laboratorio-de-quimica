@@ -18,7 +18,6 @@ import javax.swing.border.LineBorder;
 import controlador.AgregarNuevoMaestro;
 import controlador.Errores;
 
-//Clase funcional con la base de datos, solo falta renombrar variables
 public class NuevoMaestro extends JFrame {
 	/**
 	 * 
@@ -78,7 +77,7 @@ public class NuevoMaestro extends JFrame {
 		crear.setBounds(430, 325, 200, 30);
 
 		denegado = new JLabel("");
-		denegado.setBounds(430, 270, 400, 50);
+		denegado.setBounds(430, 370, 400, 50);
 		denegado.setForeground(Color.WHITE);
 
 		/********************************************************

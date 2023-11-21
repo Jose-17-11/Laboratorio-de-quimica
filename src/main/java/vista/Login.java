@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import controlador.AccesoAdmin;
+import modelo.Administrador;
 
 //Clase funcional con la base de datos, solo falta renombrar variables
 public class Login extends JFrame {
@@ -72,6 +73,7 @@ public class Login extends JFrame {
 
 		acceder = new JButton("Iniciar sesión");
 		acceder.setBounds(275, 350, 150, 30);
+		
 		denegado = new JLabel();
 		denegado.setBounds(250, 260, 400, 50);
 		denegado.setFont(new Font("Arial", Font.BOLD, 12));
@@ -103,11 +105,11 @@ public class Login extends JFrame {
 		acceder.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				usuario = text1.getText();
 				password = text2.getText();
+				Administrador admin = new Administrador(usuario, password);
 				AccesoAdmin login = new AccesoAdmin();
-				boolean controler = login.acceso(usuario, password);
+				boolean controler = login.acceso(admin.getUsuario(), admin.getPassword());
 				if (controler) {
 					Inicio sm = new Inicio();
 					sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

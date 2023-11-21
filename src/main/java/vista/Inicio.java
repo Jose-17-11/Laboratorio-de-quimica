@@ -18,14 +18,12 @@ import javax.swing.border.LineBorder;
 import controlador.DatosAdmin;
 import modelo.Administrador;
 
-//Clase funcional con la base de datos, solo falta renombrar variables
 public class Inicio extends JFrame {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 	JLabel titulo, description, description2, denegado;
-	JButton registrarEntrada, altaMaestro, deleteMaestro, reporte;
+	JButton putEntrada, postMaestro, deleteMaestro, getReporte;
 
 	String tecCuautla = Img.IMAGEN_1.getRuta();
 	String tecNM = Img.IMAGEN_2.getRuta();
@@ -40,7 +38,7 @@ public class Inicio extends JFrame {
 		/**********************************
 		 * Panel Izquierdo y su contenido *
 		 **********************************/
-		JLabel nombre, matricula, correo;
+		JLabel nombre, apellido, matricula, correo;
 		// Crear un panel en la izquierda con un color diferente
 		JPanel panelIzquierda = new JPanel();
 		panelIzquierda.setBounds(0, 0, 240, 800);
@@ -65,18 +63,24 @@ public class Inicio extends JFrame {
 		nombre = new JLabel("Nombre: " + name);
 		nombre.setBounds(10, 280, 400, 100);
 		nombre.setForeground(Color.WHITE);
+		
+		String apellidos = datosAdmin.getApellido();
+		apellido = new JLabel("Apellidos: " + apellidos);
+		apellido.setBounds(10, 315, 400, 100);
+		apellido.setForeground(Color.WHITE);
 
 		int id = datosAdmin.getId();
 		matricula = new JLabel("Matricula: " + id);
-		matricula.setBounds(10, 315, 400, 100);
+		matricula.setBounds(10, 350, 400, 100);
 		matricula.setForeground(Color.WHITE);
 
 		String email = datosAdmin.getCorreo();
 		correo = new JLabel("correo: " + email);
-		correo.setBounds(10, 350, 400, 100);
+		correo.setBounds(10, 385, 400, 100);
 		correo.setForeground(Color.WHITE);
 
 		panelIzquierda.add(nombre);
+		panelIzquierda.add(apellido);
 		panelIzquierda.add(matricula);
 		panelIzquierda.add(correo);
 		panelIzquierda.add(imagenTecnm);
@@ -96,11 +100,11 @@ public class Inicio extends JFrame {
 		description.setFont(new Font("Courier New", Font.BOLD, 16));
 		description.setForeground(Color.WHITE);
 
-		registrarEntrada = new JButton("Registrar entrada");
-		registrarEntrada.setBounds(320, 135, 150, 30);
+		putEntrada = new JButton("Registrar entrada");
+		putEntrada.setBounds(320, 135, 150, 30);
 
-		altaMaestro = new JButton("Nuevo maestro");
-		altaMaestro.setBounds(550, 135, 150, 30);
+		postMaestro = new JButton("Nuevo maestro");
+		postMaestro.setBounds(550, 135, 150, 30);
 
 		deleteMaestro = new JButton("Eliminar maestro");
 		deleteMaestro.setBounds(780, 135, 150, 30);
@@ -108,8 +112,8 @@ public class Inicio extends JFrame {
 		description2 = new JLabel("Consultar el registro de accesos");
 		description2.setBounds(535, 200, 700, 100);
 		description2.setForeground(Color.WHITE);
-		reporte = new JButton("Reporte de accesos");
-		reporte.setBounds(530, 265, 200, 30);
+		getReporte = new JButton("Reporte de accesos");
+		getReporte.setBounds(530, 265, 200, 30);
 
 		denegado = new JLabel();
 		denegado.setBounds(270, 330, 400, 50);
@@ -124,11 +128,11 @@ public class Inicio extends JFrame {
 		panel.setLayout(null);
 		panel.add(titulo);
 		panel.add(description);
-		panel.add(registrarEntrada);
-		panel.add(altaMaestro);
+		panel.add(putEntrada);
+		panel.add(postMaestro);
 		panel.add(deleteMaestro);
 		panel.add(description2);
-		panel.add(reporte);
+		panel.add(getReporte);
 //		Color de fondo del panel
 		panel.setBackground(new Color(45, 45, 45));
 
@@ -137,17 +141,17 @@ public class Inicio extends JFrame {
 		 *************************************************************************/
 
 		/******* Registrar entrada de maestros a los laboratorios ***************/
-		registrarEntrada.addActionListener(new ActionListener() {
+		putEntrada.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				RegistrarAccesoMaestros sm = new RegistrarAccesoMaestros();
 				sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				sm.setVisible(true);
-				sm.setBounds(200, 250, 1250, 400);
+				sm.setBounds(80, 250, 1250, 400);
 			}
 		});
 		/******* Agregar un nuevo maestro a la base de datos ***************/
-		altaMaestro.addActionListener(new ActionListener() {
+		postMaestro.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				NuevoMaestro sm = new NuevoMaestro();
@@ -171,7 +175,7 @@ public class Inicio extends JFrame {
 		/*******
 		 * Generar un reporte de todos los maestros de accedieron en la semana
 		 ***************/
-		reporte.addActionListener(new ActionListener() {
+		getReporte.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {

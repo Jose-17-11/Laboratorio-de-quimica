@@ -7,10 +7,16 @@ public class Administrador extends Usuario {
 	// Metodos getter para que los metodos que esten en el controlador puedan
 	// comparar el usuario y la contraseña
 
-	public Administrador(int id, String nombre, String correo) {
+	public Administrador(int id, String nombre, String apellido, String correo) {
 		this.id = id;
 		this.nombre = nombre;
+		this.apellido = apellido;
 		this.correo = correo;
+	}
+	
+	public Administrador(String usuario, String password) {
+		this.usuario = usuario;
+		this.password = password;
 	}
 	
 	public Administrador() {

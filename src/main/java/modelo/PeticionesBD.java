@@ -66,8 +66,9 @@ public class PeticionesBD {
 			if (rs.next()) {
 				int matricula = rs.getInt(1);
 				String nombre = rs.getString(4);
+				String apellido = rs.getString(5);
 				String correo = rs.getString(6);
-				return new Administrador(matricula, nombre, correo);
+				return new Administrador(matricula, nombre, apellido, correo);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -111,18 +112,10 @@ public class PeticionesBD {
 				String materia = rs.getString(6);
 				String carrera = rs.getString(7);
 
-//				System.out.println(fecha + " " + hora + " " + maestro + " " + salon + " " + grupo + " " + materia + " " + carrera);
 				String tabla[] = { fecha, hora, maestro, salon, grupo, materia, carrera };
 
 				// Agregar el array tabla a la lista
 				listaDatos.add(tabla);
-//				if (i == 0) {
-//					return nombre + " " + apellido;
-//				} else if (i == 1) {
-//					return matricula;
-//				} else {
-//					return correo;
-//				}
 			}
 			return listaDatos;
 		} catch (SQLException e) {
@@ -315,7 +308,11 @@ public class PeticionesBD {
 			conexion.desconectar(cn, stm, rs);
 		}
 	}
+	
 
+	/***********************************************************************
+	 * Metodo que extrae todas las matriculas de los maestros en una lista *
+	 ***********************************************************************/
 	public static List<String> obtenerMaestrosDesdeBaseDeDatos() {
 		List<String> maestros = new ArrayList<>();
 		Connection cn = null;
@@ -339,78 +336,4 @@ public class PeticionesBD {
 
 		return maestros;
 	}
-
-	public void PeticionesJdbc() {
-//		cn es una variable para representar la conexion a una base de datos
-		Connection cn = null;
-//		La variable stagement sirve para poder enviar consultas a la base de datos para su ejecucion
-		Statement stm = null;
-//		Esta variable alamacena resultados de una consulta sql
-		ResultSet rs = null;
-		try {
-//			cn representara la conexion con la base de datos ya establecida
-			cn = conexion.conectar();
-//			stm nos ayudara a crear consultas mediante cn a la base de datos
-			stm = cn.createStatement();
-//			rs toma el valor de toda la tabla usuario de la base de datos mediante stm
-			rs = stm.executeQuery("SELECT * FROM maestros");
-//			Si la tabla rs sigue teniendo mas filas sigue el ciclo, si no hay mas filas se rompe el ciclo 
-//			List<Datos> listaDatos = new ArrayList<>();
-			while (rs.next()) {
-				// Valor de la columna 1
-//				int matricula = rs.getInt(1);
-//				//Valor de la columna 2
-//				String grupo = rs.getString(2);
-//				//Valor de la columna 3
-//				String materia = rs.getString(3);
-//				String hora = rs.getString(4);
-//				Datos datos = new Datos(matricula, grupo, materia, hora);
-//				listaDatos.add(datos);
-
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-
-		}
-		/*
-		 * finally se ejecutara siempre aunque no surja alguna excepcion y sirve para
-		 * realizar tareas de limpieza y garantizar que los recursos se cierren
-		 * adecuadamente tambien sirver para posibles excepciones que surjan al cerrar
-		 * los recursos
-		 */
-		finally {
-			conexion.desconectar(cn, stm, rs);
-		}
-	}
-	// Metodo de tipo lista que extrae los datos de una tabla y los agrega a una
-	// lista para despues poder manipular los datos
-//    public List<Datos> obtenerDatos() {
-//        List<Datos> listaDatos = new ArrayList<>();
-//        Connection cn = null;
-//        Statement stm = null;
-//        ResultSet rs = null;
-//
-//        try {
-//            cn = conexion.conectar();
-//            stm = cn.createStatement();
-//            rs = stm.executeQuery("SELECT * FROM admin");
-//
-//            while (rs.next()) {
-//                int matricula = rs.getInt("matricula");
-//                String grupo = rs.getString("grupo");
-//                String materia = rs.getString("materia");
-//                String hora = rs.getString("hora");
-//
-//                Datos datos = new Datos(matricula, grupo, materia, hora);
-//                listaDatos.add(datos);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            conexion.desconectar(cn, stm, rs);
-//        }
-//
-//        return listaDatos;
-//    }
-
 }

@@ -6,6 +6,8 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,56 +15,42 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
 
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-
-import modelo.PeticionesBD;
-import pruebas.Java1416;
-import pruebas.ModeloDatos;
+import controlador.ModeloDatos;
+import controlador.TablaAccesos;
 
 public class ReporteAccesos extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JLabel description, denegado;
 	JButton reporteMensual, reporteSemanal, reporteDia, imprimir;
-
-	private JTable table;
-	private DefaultTableModel tableModel;
-	
 	int i = 0;
-	
+
 	String tecCuautla = Img.IMAGEN_1.getRuta();
 	String tecNM = Img.IMAGEN_2.getRuta();
-
+	String document = "total_";
+	
 	public ReporteAccesos() {
 //		Encabezado de la ventana 
 		setTitle("Administrador");
 		setResizable(false);
 
-		/******************************************************
-		 * Panel de la tabla y su contenido
-		 *******************************************/
+		/************************************
+		 * Panel de la tabla y su contenido	*
+		 ************************************/
 		JPanel panelTable = new JPanel();
-		panelTable.setBounds(200, 150, 950, 300); // Ajusta las coordenadas y el tamaño según tus necesidades
+		panelTable.setBounds(200, 150, 950, 300); 
 		panelTable.setBackground(new Color(0, 0, 0)); // Establece el color del panel
-		panelTable.setLayout(new BorderLayout()); // Puedes utilizar otro layout si lo prefieres
-		
-		// Agrega el panel a la ventana
+		panelTable.setLayout(new BorderLayout());
+
 		getContentPane().add(panelTable);
 		panelTable.setBackground(new Color(250, 250, 250));
-		Java1416 java1416 = new Java1416(i);
-        panelTable.add(java1416, BorderLayout.CENTER);/******************************************************
-		 * Panel Izquierdo y su contenido
-		 *******************************************/
+		TablaAccesos java1416 = new TablaAccesos(i);
+		panelTable.add(java1416, BorderLayout.CENTER);
 
 		JLabel imagenLabel = new JLabel();// Se crea el label que almacenara el logo del tec de cuautla
 //		Se crea el objeto de tipo imagen pasandole la direccion de donde se encuentra la imagen a utilizar
@@ -89,9 +77,8 @@ public class ReporteAccesos extends JFrame {
 
 		reporteDia = new JButton("Dia");
 		reporteDia.setBounds(830, 100, 200, 30);
-		
-		
-		imprimir = new JButton("Imprimir");
+
+		imprimir = new JButton("Descargar Excel");
 		imprimir.setBounds(530, 500, 200, 30);
 
 		denegado = new JLabel();
@@ -119,6 +106,7 @@ public class ReporteAccesos extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				i = 1;
 				java1416.actualizarTabla(i);
+				document = "mensual_";
 			}
 		});
 		reporteSemanal.addActionListener(new ActionListener() {
@@ -127,6 +115,7 @@ public class ReporteAccesos extends JFrame {
 				SwingUtilities.invokeLater(() -> {
 					i = 2;
 					java1416.actualizarTabla(i);
+					document = "semanal_";
 				});
 			}
 		});
@@ -136,6 +125,7 @@ public class ReporteAccesos extends JFrame {
 				SwingUtilities.invokeLater(() -> {
 					i = 3;
 					java1416.actualizarTabla(i);
+					document = "dia_";
 				});
 			}
 		});
@@ -144,7 +134,7 @@ public class ReporteAccesos extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				ModeloDatos modelo = new ModeloDatos(i);
 				try {
-					modelo.excel(i);
+					modelo.excel(i, document);
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
