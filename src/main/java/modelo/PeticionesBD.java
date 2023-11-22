@@ -281,33 +281,57 @@ public class PeticionesBD {
 	 * Metodo que elimina un maestro de la base de datos *
 	 *****************************************************/
 	public String eliminarMaestro(String matricula) throws SQLIntegrityConstraintViolationException {
-		Connection cn = null;
-		Statement stm = null;
-		ResultSet rs = null;
+	    Connection cn = null;
+	    PreparedStatement pstmtEliminarMaestro = null;
+	    PreparedStatement pstmtEliminarHorarios = null;
 
-		try {
-			cn = conexion.conectar();
-			stm = cn.createStatement();
-			rs = stm.executeQuery("SELECT * FROM maestros");
-			String consulta = "DELETE FROM maestros WHERE Matricula = ?";
+	    try {
+	        cn = conexion.conectar();
+	        cn.setAutoCommit(false); // Desactivar la confirmación automática
 
-			PreparedStatement pstmt = cn.prepareStatement(consulta);
-			pstmt.setString(1, matricula);
+	        // Eliminar horarios asociados al maestro
+	        String consultaEliminarHorarios = "DELETE FROM horarios WHERE matricula_maestro = ?";
+	        pstmtEliminarHorarios = cn.prepareStatement(consultaEliminarHorarios);
+	        pstmtEliminarHorarios.setString(1, matricula);
+	        pstmtEliminarHorarios.executeUpdate();
 
-			int filasAfectadas = pstmt.executeUpdate();
-			if (filasAfectadas > 0) {
-				return "Maestro eliminado con éxito.";
-			} else {
-				return "No se pudo encontrar al maestro con la matrícula proporcionada.";
-			}
+	        // Eliminar al maestro
+	        String consultaEliminarMaestro = "DELETE FROM maestros WHERE matricula = ?";
+	        pstmtEliminarMaestro = cn.prepareStatement(consultaEliminarMaestro);
+	        pstmtEliminarMaestro.setString(1, matricula);
+	        int filasAfectadas = pstmtEliminarMaestro.executeUpdate();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return "Error al eliminar al maestro.";
-		} finally {
-			conexion.desconectar(cn, stm, rs);
-		}
+	        // Confirmar la transacción
+	        cn.commit();
+
+	        if (filasAfectadas > 0) {
+	            return "Maestro y sus horarios eliminados con éxito.";
+	        } else {
+	            return "No se pudo encontrar al maestro con la matrícula proporcionada.";
+	        }
+
+	    } catch (SQLException e) {
+	        try {
+	            if (cn != null) {
+	                cn.rollback(); // Deshacer la transacción en caso de error
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	        e.printStackTrace();
+	        return "Error al eliminar al maestro.";
+	    } finally {
+	        try {
+	            if (cn != null) {
+	                cn.setAutoCommit(true); // Restaurar la confirmación automática
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	        conexion.desconectar(cn, null, null); // Cerrar las conexiones
+	    }
 	}
+
 	
 
 	/***********************************************************************
@@ -336,4 +360,63 @@ public class PeticionesBD {
 
 		return maestros;
 	}
+	
+	public List<String[]> obtenerHorarios() {
+	    Connection cn = null;
+	    Statement stm = null;
+	    ResultSet rs = null;
+
+	    try {
+	        cn = conexion.conectar();
+	        stm = cn.createStatement();
+	        rs = stm.executeQuery("SELECT * FROM `horarios` ORDER BY FIELD(dia_semana, 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'), hora_inicio");
+
+	        List<String[]> listaDatos = new ArrayList<>();
+	        while (rs.next()) {
+	            String matriculaMaestro = rs.getString("matricula_maestro");
+	            String diaSemana = rs.getString("dia_semana");
+	            String horaInicio = rs.getString("hora_inicio");
+	            String horaFin = rs.getString("hora_fin");
+	            String salon = rs.getString("salon");
+
+	            String[] tabla = {matriculaMaestro, diaSemana, horaInicio, horaFin, salon};
+
+	            // Agregar el array tabla a la lista
+	            listaDatos.add(tabla);
+	        }
+	        return listaDatos;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        conexion.desconectar(cn, stm, rs);
+	    }
+	    return null;
+	}
+
+	public boolean asignarHorario(String matriculaMaestro, String diaSemana, String horaInicio, String horaFin, String salon) {
+	    Connection cn = null;
+	    PreparedStatement ps = null;
+
+	    try {
+	        cn = conexion.conectar();
+	        String query = "INSERT INTO `horarios` (matricula_maestro, dia_semana, hora_inicio, hora_fin, salon) VALUES (?, ?, ?, ?, ?)";
+	        ps = cn.prepareStatement(query);
+	        ps.setString(1, matriculaMaestro);
+	        ps.setString(2, diaSemana);
+	        ps.setString(3, horaInicio);
+	        ps.setString(4, horaFin);
+	        ps.setString(5, salon);
+
+	        int filasAfectadas = ps.executeUpdate();
+
+	        // Si se insertó al menos una fila, se considera exitoso
+	        return filasAfectadas > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        conexion.desconectar(cn, ps, null);
+	    }
+	    return false;
+	}
+
 }

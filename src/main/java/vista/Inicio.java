@@ -23,7 +23,7 @@ public class Inicio extends JFrame {
 	 * 
 	 */
 	JLabel titulo, description, description2, denegado;
-	JButton putEntrada, postMaestro, deleteMaestro, getReporte;
+	JButton putEntrada, postMaestro, deleteMaestro, horario, getReporte;
 
 	String tecCuautla = Img.IMAGEN_1.getRuta();
 	String tecNM = Img.IMAGEN_2.getRuta();
@@ -108,7 +108,10 @@ public class Inicio extends JFrame {
 
 		deleteMaestro = new JButton("Eliminar maestro");
 		deleteMaestro.setBounds(780, 135, 150, 30);
-
+		
+		horario = new JButton("Horarios");
+		horario.setBounds(320, 265, 150, 30);
+		
 		description2 = new JLabel("Consultar el registro de accesos");
 		description2.setBounds(535, 200, 700, 100);
 		description2.setForeground(Color.WHITE);
@@ -131,6 +134,7 @@ public class Inicio extends JFrame {
 		panel.add(putEntrada);
 		panel.add(postMaestro);
 		panel.add(deleteMaestro);
+		panel.add(horario);
 		panel.add(description2);
 		panel.add(getReporte);
 //		Color de fondo del panel
@@ -171,7 +175,19 @@ public class Inicio extends JFrame {
 				sm.setBounds(15, 0, 920, 400);
 			}
 		});
-
+		
+		horario.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(() -> {
+					Horarios sm = new Horarios();
+					sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					sm.setVisible(true);
+					sm.setBounds(15, 0, 1350, 600);
+				});
+			}
+		});
+		
 		/*******
 		 * Generar un reporte de todos los maestros de accedieron en la semana
 		 ***************/
