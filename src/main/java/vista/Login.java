@@ -16,7 +16,9 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import controlador.AccesoAdmin;
+import controlador.maestros.AccesoProfesor;
 import modelo.Administrador;
+import modelo.Profesor;
 import vista.admin.Inicio;
 import vista.rutas.Img;
 
@@ -112,13 +114,22 @@ public class Login extends JFrame {
 				Administrador admin = new Administrador(usuario, password);
 				AccesoAdmin login = new AccesoAdmin();
 				boolean controler = login.acceso(admin.getUsuario(), admin.getPassword());
+				
+				Profesor maestro = new Profesor(usuario, password);
+				AccesoProfesor loginM = new AccesoProfesor();
+				boolean controlerM = loginM.acceso(maestro.getUsuario(), maestro.getPassword());
 				if (controler) {
 					Inicio sm = new Inicio();
 					sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					sm.setVisible(true);
 					sm.setBounds(200, 0, 1010, 550);
 					denegado.setText(" ");
-				} else {
+				}else if(controlerM){
+					InicioM sm = new InicioM(usuario);
+					sm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					sm.setVisible(true);
+					sm.setBounds(200, 0, 1010, 550);
+				}else {
 					denegado.setText("Usuario o contraseña incorrectos.");
 				}
 			}

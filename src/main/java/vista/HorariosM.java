@@ -1,4 +1,4 @@
-package vista.admin;
+package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,12 +6,6 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.Duration;
-import java.time.LocalTime;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,27 +16,26 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-import controlador.EliminarMaestros;
-import controlador.ModeloDatos;
 import controlador.TablaHorarios;
 import controlador.horarios.AsignarHorario;
-import modelo.PeticionesBD;
 import vista.rutas.Img;
 
-public class Horarios extends JFrame {
+public class HorariosM extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	JLabel description, denegado, matriculaLabel, diaLabel, entradaLabel, salidaLabel, salonLabel;
+	JLabel description, denegado, matricula, matriculaLabel, diaLabel, entradaLabel, salidaLabel, salonLabel;
 	JButton apartar;
 	int i = 0;
 
 	String tecCuautla = Img.IMAGEN_1.getRuta();
 	String tecNM = Img.IMAGEN_2.getRuta();
 	String document = "total_";
+	String usuario;
 
-	public Horarios() {
+	public HorariosM(String usuario) {
+		this.usuario = usuario;
 //		Encabezado de la ventana 
 		setTitle("Administrador");
 		setResizable(false);
@@ -77,39 +70,40 @@ public class Horarios extends JFrame {
 		description.setFont(new Font("Courier New", Font.BOLD, 16));
 		description.setForeground(Color.WHITE);
 
-		matriculaLabel = new JLabel("Matricula");
-		matriculaLabel.setBounds(265, 120, 200, 100);
+		matricula = new JLabel("Matricula");
+		matricula.setBounds(265, 120, 200, 100);
+		matricula.setForeground(Color.WHITE);
+		
+		matriculaLabel = new JLabel(usuario);
+		matriculaLabel.setBounds(265, 150, 200, 100);
 		matriculaLabel.setForeground(Color.WHITE);
-		List<String> maestros = EliminarMaestros.obtenerMaestros();
-		JComboBox<String> matricula = new JComboBox<>(maestros.toArray(new String[0]));
-		matricula.setBounds(250, 190, 100, 30);
-
+		
 		diaLabel = new JLabel("Día");
 		diaLabel.setBounds(475, 120, 200, 100);
 		diaLabel.setForeground(Color.WHITE);
 		JComboBox<String> dia = new JComboBox<>(new String[] { "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES" });
 		dia.setBounds(435, 190, 100, 30);
-		
+
 		entradaLabel = new JLabel("Entrada");
 		entradaLabel.setBounds(675, 120, 200, 100);
 		entradaLabel.setForeground(Color.WHITE);
 		String[] horas = generarHoras(7, 18);
-        JComboBox<String> entrada = new JComboBox<>(horas);
-        entrada.setBounds(635, 190, 100, 30);
+		JComboBox<String> entrada = new JComboBox<>(horas);
+		entrada.setBounds(635, 190, 100, 30);
 
-        salidaLabel = new JLabel("Salida");
+		salidaLabel = new JLabel("Salida");
 		salidaLabel.setBounds(875, 120, 200, 100);
 		salidaLabel.setForeground(Color.WHITE);
 		String[] horasS = generarHoras(8, 19);
-        JComboBox<String> salida = new JComboBox<>(horasS);
-        salida.setBounds(835, 190, 100, 30);
-        
-        salonLabel = new JLabel("Salon");
+		JComboBox<String> salida = new JComboBox<>(horasS);
+		salida.setBounds(835, 190, 100, 30);
+
+		salonLabel = new JLabel("Salon");
 		salonLabel.setBounds(1075, 120, 200, 100);
 		salonLabel.setForeground(Color.WHITE);
 		JComboBox<String> salon = new JComboBox<>(new String[] { "I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8" });
 		salon.setBounds(1035, 190, 100, 30);
-        
+
 		apartar = new JButton("Asignar laboratorio");
 		apartar.setBounds(200, 570, 200, 30);
 
@@ -127,12 +121,12 @@ public class Horarios extends JFrame {
 		panel.add(imagenLabel);
 		panel.add(imagenLabel2);
 		panel.add(description);
+		panel.add(matricula);
 		panel.add(matriculaLabel);
 		panel.add(diaLabel);
 		panel.add(entradaLabel);
 		panel.add(salidaLabel);
 		panel.add(salonLabel);
-		panel.add(matricula);
 		panel.add(dia);
 		panel.add(entrada);
 		panel.add(salida);
@@ -145,7 +139,7 @@ public class Horarios extends JFrame {
 		apartar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String matriculaID = (String) matricula.getSelectedItem();
+				String matriculaID = usuario;
 				String day = (String) dia.getSelectedItem();
 				String horaEntrada = (String) entrada.getSelectedItem();
 				String horaSalida = (String) salida.getSelectedItem();
@@ -156,14 +150,14 @@ public class Horarios extends JFrame {
 			}
 		});
 	}
-	
+
 	private String[] generarHoras(int j, int k) {
-        String[] horas = new String[12];
+		String[] horas = new String[12];
 
-        for (int i = j; i <= k; i++) {
-            horas[i - j] = String.format("%02d:00", i);
-        }
+		for (int i = j; i <= k; i++) {
+			horas[i - j] = String.format("%02d:00", i);
+		}
 
-        return horas;
-    }
+		return horas;
+	}
 }

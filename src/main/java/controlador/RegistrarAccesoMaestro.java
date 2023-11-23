@@ -1,6 +1,9 @@
 package controlador;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.Locale;
 
 import modelo.PeticionesBD;
 
@@ -10,29 +13,40 @@ import modelo.PeticionesBD;
  *********************************************************************************/
 public class RegistrarAccesoMaestro {
 	/* Metodo que registra el acceso del maestro y sus datos a un laboratorio*/
-	public void registro(String matricula, String salon, int grupo, String materia, String carrera)
+	public void registro(String maestro, String salon, int grupo, String materia, String carrera)
 			throws SQLIntegrityConstraintViolationException {
 		PeticionesBD acceso = new PeticionesBD();
-		acceso.accesoLaboratorio(matricula, salon, grupo, materia, carrera);
-
+		acceso.accesoLaboratorio(maestro, salon, grupo, materia, carrera);
 	}
-	/* Metodo que busca si el maestro tiene el permiso de acceso al laboratorio*/
-	public boolean buscarMaestro(String matricula) {
-		PeticionesBD busqueda = new PeticionesBD();
-		if (busqueda.autenticacionMaestros(matricula)) {
+	
+//	Verifica si el maestro tiene laboratorio asignado en la hora actual
+	public boolean acceso(String matricula, String salon) {
+		String dia = obtenerDia();
+		PeticionesBD permiso = new PeticionesBD();
+		boolean decision = permiso.verificarAccesoMaestro(matricula, dia, salon);
+		if(decision) {
 			return true;
 		}
 		return false;
 	}
 	
-	/* Metodo que busca si el salon al que se accedera esta libre o no*/
-	public boolean buscarSalon(String salon, int i) throws SQLIntegrityConstraintViolationException {
-		PeticionesBD busqueda = new PeticionesBD();
-		boolean active = busqueda.peticionSalones(salon);
-		if (active || i == 1) {
-			return true;
-		} else {
-		return false;
-		}
+//	Se obtiene el dia de la semana que sea hoy
+	public String obtenerDia() {
+		// Obtener la fecha actual
+		LocalDate fechaActual = LocalDate.now();
+
+		// Obtener el día de la semana actual
+		DayOfWeek diaDeLaSemana = fechaActual.getDayOfWeek();
+
+		// Imprimir el nombre del día de la semana actual en español
+		String nombreDia = diaDeLaSemana.getDisplayName(java.time.format.TextStyle.FULL, // Estilo completo (puedes
+																							// cambiarlo según tus
+																							// preferencias)
+				new Locale("es", "ES") // Locale para español de España
+		);
+
+		nombreDia = nombreDia.toUpperCase();
+
+		return nombreDia;
 	}
 }

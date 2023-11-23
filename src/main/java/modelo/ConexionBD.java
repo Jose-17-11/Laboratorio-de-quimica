@@ -19,7 +19,7 @@ public class ConexionBD {
 			Class.forName(CONTROLADOR);
 		}catch(ClassNotFoundException e) {
 //			Si esta mal la conexion con el controlador arrojara la siguiente exception
-			System.out.println("Error al cargar el controlador");
+//			System.out.println("Error al cargar el controlador");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -35,7 +35,7 @@ public class ConexionBD {
 //			Se ingresa a la conexion los datos de acceso a la base de datos
 			conexion = DriverManager.getConnection(URL, USUARIO, CLAVE);
 //			Si la conexion fue exitosa arrojara el siguiente texto
-			System.out.println("Conecion OK");
+//			System.out.println("Conecion OK");
 			
 		}  catch(SQLException e){
 //			Si esta mal la conexion con la base de datos arrojara la siguiente exception

@@ -1,4 +1,4 @@
-package vista.admin;
+package vista;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -26,19 +26,20 @@ import controlador.RegistrarAccesoMaestro;
 import vista.rutas.Img;
 
 //Clase funcional con la base de datos, solo falta renombrar variables
-public class RegistrarAccesoMaestros extends JFrame {
+public class RegistrarM extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	JLabel description, exitosamente, n1, n2, n3, n4, n5;
+	JLabel description, exitosamente, matricula, n1, n2, n3, n4, n5;
 	JTextField text1;
 	JButton registrarEntrada;
 	int i = 0;
 
 	String tecCuautla = Img.IMAGEN_1.getRuta();
-
-	public RegistrarAccesoMaestros() {
+	String usuario;
+	public RegistrarM(String usuario) {
+		this.usuario = usuario;
 		ImageIcon icono = new ImageIcon(tecCuautla);
 
 		setTitle("Registro de accesos");
@@ -55,10 +56,11 @@ public class RegistrarAccesoMaestros extends JFrame {
 		n1 = new JLabel("Matricula");
 		n1.setBounds(105, 80, 200, 100);
 		n1.setForeground(Color.WHITE);
-		List<String> maestros = EliminarMaestros.obtenerMaestros();
-		JComboBox<String> matricula = new JComboBox<>(maestros.toArray(new String[0]));
-		matricula.setBounds(70, 150, 150, 30);
 
+		matricula = new JLabel("Matricula");
+		matricula.setBounds(105, 120, 200, 100);
+		matricula.setForeground(Color.WHITE);
+		
 		n2 = new JLabel("Salon");
 		n2.setBounds(335, 80, 200, 100);
 		n2.setForeground(Color.WHITE);
@@ -110,7 +112,6 @@ public class RegistrarAccesoMaestros extends JFrame {
 				return label;
 			}
 		};
-		matricula.setRenderer(renderer);
 		laboratorio.setRenderer(renderer);
 		group.setRenderer(renderer);
 		materias.setRenderer(renderer);
@@ -127,12 +128,12 @@ public class RegistrarAccesoMaestros extends JFrame {
 		setIconImage(icono.getImage());
 		panel.setLayout(null);
 		panel.add(description);
+		panel.add(matricula);
 		panel.add(n1);
 		panel.add(n2);
 		panel.add(n3);
 		panel.add(n4);
 		panel.add(n5);
-		panel.add(matricula);
 		panel.add(laboratorio);
 		panel.add(group);
 		panel.add(materias);
@@ -149,7 +150,7 @@ public class RegistrarAccesoMaestros extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				RegistrarAccesoMaestro acceso = new RegistrarAccesoMaestro();
 				
-				String matriculaM = (String) matricula.getSelectedItem();
+				String matriculaM = usuario;
 				String salon = (String) laboratorio.getSelectedItem();
 				int grupo = Integer.parseInt((String) group.getSelectedItem());
 				String materia = (String) materias.getSelectedItem();

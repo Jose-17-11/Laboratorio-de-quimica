@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class PeticionesBD {
 
@@ -50,6 +51,30 @@ public class PeticionesBD {
 		return false;
 	}
 
+	public boolean autenticacionMaestro(String username, String password) {
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
+
+		try {
+			cn = conexion.conectar();
+			stm = cn.createStatement();
+			rs = stm.executeQuery("SELECT * FROM maestros");
+
+			while (rs.next()) {
+				String user = rs.getString(1);
+				String pass = rs.getString(4);
+				if (user.equalsIgnoreCase(username) && pass.equals(password))
+					return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			conexion.desconectar(cn, stm, rs);
+		}
+		return false;
+	}
+	
 	/*************************************************
 	 * Metodo que extrae los datos del administrador *
 	 *************************************************/
@@ -77,7 +102,176 @@ public class PeticionesBD {
 		}
 		return null;
 	}
+//	Obtiene todos los datos del maestro que a ingresado
+	public Profesor datosM(String matricula) {
+		Connection cn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		cn = conexion.conectar();
+		try {
+			// Utilizar una consulta parametrizada
+			String consulta = "SELECT * FROM maestros WHERE matricula = ?";
+			pstmt = cn.prepareStatement(consulta);
 
+			// Establecer el valor para el marcador de posición
+			pstmt.setString(1, matricula);
+
+			// Ejecutar la consulta
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				String matriculaID = rs.getString(1);
+				String nombre = rs.getString(2);
+				String apellidos = rs.getString(3);
+				return new Profesor(matriculaID, nombre, apellidos);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// Cerrar recursos
+			conexion.desconectar(cn, pstmt, rs);
+		}
+		return null;
+	}
+	
+	// Metodo que verifica si el maestro que intente acceder al laboratorio esta
+	// registrado en el horario
+	public String peticionCredenciales(String matricula) {
+		Connection cn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String password = null;
+		cn = conexion.conectar();
+		try {
+			// Utilizar una consulta parametrizada
+			String consulta = "SELECT * FROM maestros WHERE matricula = ?";
+			pstmt = cn.prepareStatement(consulta);
+
+			// Establecer el valor para el marcador de posición
+			pstmt.setString(1, matricula);
+
+			// Ejecutar la consulta
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				password = rs.getString(4);
+				return password;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// Cerrar recursos
+			conexion.desconectar(cn, pstmt, rs);
+		}
+		return "";
+
+	}
+
+	// Metodo que verifica si el maestro que intente acceder al laboratorio esta
+	// registrado en el horario
+	public boolean verificarAccesoMaestro(String matricula, String dia, String salon) {
+		Connection cn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Time entrada = null;
+		Time salida = null;
+		boolean decision = false;
+		try {
+			cn = conexion.conectar();
+
+			// Utilizar una consulta parametrizada
+			String consulta = "SELECT * FROM horarios WHERE matricula_maestro = ? AND dia_semana = ?";
+			pstmt = cn.prepareStatement(consulta);
+
+			// Establecer el valor para el marcador de posición
+			pstmt.setString(1, matricula);
+			pstmt.setString(2, dia);
+
+			// Ejecutar la consulta
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				entrada = rs.getTime(4);
+				salida = rs.getTime(5);
+				String lab = rs.getString(6);
+
+				LocalTime horaE = entrada.toLocalTime();
+				LocalTime horaS = salida.toLocalTime();
+				LocalTime horaActual = LocalTime.now();
+
+				// Calcula la diferencia entre las horas
+				Duration x = Duration.between(horaE, horaS);
+				Duration y = Duration.between(horaActual, horaS);
+				System.out.println("Hora de entrada: " + horaE);
+				System.out.println("Hora de salida: " + horaS);
+				System.out.println("Hora actual: " + horaActual);
+				long minutosX = x.toMinutes();
+				long h = y.toMinutes();
+				System.out.println(minutosX);
+				System.out.println(h);
+				System.out.println(salon);
+				System.out.println(lab);
+				if (h < minutosX && h > 0 && salon.equalsIgnoreCase(lab)) {
+					decision = true;
+					break;
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// Cerrar recursos
+			conexion.desconectar(cn, pstmt, rs);
+		}
+
+		return decision;
+	}
+
+	/*********************************************************
+	 * Metodo que agrega un nuevo maestro a la base de datos *
+	 *********************************************************/
+	public String accesoLaboratorio(String maestro, String salon, int grupo, String materia, String carrera)
+			throws SQLIntegrityConstraintViolationException {
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
+		try {
+			cn = conexion.conectar();
+			stm = cn.createStatement();
+			rs = stm.executeQuery("SELECT * FROM accesos");
+			String consulta = "INSERT INTO accesos (fecha, hora, maestro, salon, grupo, materia, carrera) VALUES (?, ?, ?, ?, ?, ?, ?)";
+			LocalDateTime locaDate = LocalDateTime.now();
+			Date fechaSQL = Date.valueOf(locaDate.toLocalDate());
+			Time horaSQL = Time.valueOf(locaDate.toLocalTime());
+
+			PreparedStatement pstmt = cn.prepareStatement(consulta);
+			pstmt.setDate(1, fechaSQL);
+			pstmt.setTime(2, horaSQL);
+			pstmt.setString(3, maestro);
+			pstmt.setString(4, salon);
+			pstmt.setInt(5, grupo);
+			pstmt.setString(6, materia);
+			pstmt.setString(7, carrera);
+
+			int filasAfectadas = pstmt.executeUpdate();
+			if (filasAfectadas > 0) {
+				return ("Maestro agregado con éxito.");
+			} else {
+				return ("No se pudo agregar el profesor.");
+			}
+
+		} catch (SQLIntegrityConstraintViolationException e) {
+			conexion.desconectar(cn, stm, rs);
+			return ("El maestro que intenta ingresar ya se encuentra registrado.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			conexion.desconectar(cn, stm, rs);
+		}
+		return "";
+	}
+
+//	Se obtienen los accesos a los laboratorios
 	public List<String[]> accesos(int i) {
 		Connection cn = null;
 		Statement stm = null;
@@ -150,92 +344,6 @@ public class PeticionesBD {
 		return false;
 	}
 
-	/************************************************
-	 * Metodo que verifica si el salon esta ocupado *
-	 ************************************************/
-	public boolean peticionSalones(String salon) throws SQLIntegrityConstraintViolationException {
-
-		Connection cn = null;
-		Statement stm = null;
-		ResultSet rs = null;
-
-		try {
-			cn = conexion.conectar();
-			stm = cn.createStatement();
-			rs = stm.executeQuery("SELECT * FROM accesos WHERE fecha = CURDATE();");
-			int i = 0;
-			LocalDateTime locaDate = LocalDateTime.now();
-			Time horaSQL = Time.valueOf(locaDate.toLocalTime());
-			while (rs.next()) {
-				Time hora = rs.getTime(2);
-				LocalTime horaBD = hora.toLocalTime();
-				LocalTime horaDB = horaSQL.toLocalTime();
-				// Calcula la diferencia entre las horas
-				Duration duration = Duration.between(horaBD, horaDB);
-
-				long minutos = duration.toMinutes();
-
-				String laboratorio = rs.getString(4);
-				if (laboratorio.equals(salon) && minutos <= 50) {
-					i++;
-				}
-			}
-			if (i == 0) {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			conexion.desconectar(cn, stm, rs);
-		}
-		return false;
-	}
-
-	/************************************************************
-	 * Metodo que registra el acceso de maestros al laboratorio *
-	 ************************************************************/
-	public String accesoLaboratorio(String matricula, String salon, int grupo, String materia, String carrera)
-			throws SQLIntegrityConstraintViolationException {
-
-		Connection cn = null;
-		Statement stm = null;
-		ResultSet rs = null;
-
-		try {
-			cn = conexion.conectar();
-			stm = cn.createStatement();
-
-			String consulta = "INSERT INTO accesos (fecha, hora, maestro, salon, grupo, materia, carrera) VALUES (?, ?, ?, ?, ?, ?, ?)";
-			// Crear un objeto PreparedStatement
-			PreparedStatement pstmt = cn.prepareStatement(consulta);
-			// En el objeto se ingresan los atributos del nuevo maestro
-			LocalDateTime locaDate = LocalDateTime.now();
-			Date fechaSQL = Date.valueOf(locaDate.toLocalDate());
-			Time horaSQL = Time.valueOf(locaDate.toLocalTime());
-			pstmt.setDate(1, fechaSQL);
-			pstmt.setTime(2, horaSQL);
-			pstmt.setString(3, matricula);
-			pstmt.setString(4, salon);
-			pstmt.setInt(5, grupo);
-			pstmt.setString(6, materia);
-			pstmt.setString(7, carrera);
-
-			// Ejecutar la consulta
-			int filasAfectadas = pstmt.executeUpdate();
-			if (filasAfectadas > 0) {
-				return "Maestro agregado con éxito.";
-			} else {
-				return "No se pudo agregar el profesor.";
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return "Ocurrió un error al registrar el profesor.";
-		} finally {
-			conexion.desconectar(cn, stm, rs);
-		}
-	}
-
 	/*********************************************************
 	 * Metodo que agrega un nuevo maestro a la base de datos *
 	 *********************************************************/
@@ -244,17 +352,21 @@ public class PeticionesBD {
 		Connection cn = null;
 		Statement stm = null;
 		ResultSet rs = null;
-
 		try {
 			cn = conexion.conectar();
 			stm = cn.createStatement();
 			rs = stm.executeQuery("SELECT * FROM maestros");
-			String consulta = "INSERT INTO maestros (matricula, nombre, apellido) VALUES (?, ?, ?)";
+			String consulta = "INSERT INTO maestros (matricula, nombre, apellido, password) VALUES (?, ?, ?,?)";
+
+			Random random = new Random();
+			int numero = random.nextInt(100); // Número aleatorio entre 0 y 99
+			String password = matricula + numero;
 
 			PreparedStatement pstmt = cn.prepareStatement(consulta);
 			pstmt.setString(1, matricula);
 			pstmt.setString(2, nombre);
 			pstmt.setString(3, apellido);
+			pstmt.setString(4, password);
 
 			int filasAfectadas = pstmt.executeUpdate();
 			if (filasAfectadas > 0) {
@@ -469,13 +581,13 @@ public class PeticionesBD {
 				long minutosX = x.toMinutes();
 				long minutosY = y.toMinutes();
 				long minutosZ = z.toMinutes();
-				if(minutosY < 0 && minutosZ > minutosX) {
+				if (minutosY < 0 && minutosZ > minutosX) {
 					decision = false;
 					break;
-				}else if(minutosY>0 && minutosZ<minutosX) {
+				} else if (minutosY > 0 && minutosZ < minutosX) {
 					decision = false;
 					break;
-				}else if ((minutosY > minutosX || minutosY <= 0) && (minutosZ >= minutosX || minutosZ < 0)) {
+				} else if ((minutosY > minutosX || minutosY <= 0) && (minutosZ >= minutosX || minutosZ < 0)) {
 					decision = true;
 				} else {
 					decision = false;

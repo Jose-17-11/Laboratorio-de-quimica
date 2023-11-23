@@ -1,7 +1,7 @@
 package modelo;
 
 public class Usuario {
-	protected String nombre, matricula, correo;
+	protected String nombre, matricula, apellidos;
 	
 	public String getNombre() {
 		return nombre;
@@ -19,11 +19,11 @@ public class Usuario {
 		this.matricula = matricula;
 	}
 	
-	public String getCorreo() {
-		return correo;
+	public String getApellidos() {
+		return apellidos;
 	}
 	
-	public void setCorreo(String correo) {
-		this.correo = correo;
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
 	}
 }
