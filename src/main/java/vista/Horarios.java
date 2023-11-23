@@ -109,7 +109,7 @@ public class Horarios extends JFrame {
 		apartar.setBounds(530, 500, 200, 30);
 
 		denegado = new JLabel();
-		denegado.setBounds(220, 330, 400, 50);
+		denegado.setBounds(100, 500, 400, 50);
 		denegado.setForeground(Color.WHITE);
 
 //		Se generan los elementos que estaran visibles
@@ -133,6 +133,7 @@ public class Horarios extends JFrame {
 		panel.add(salida);
 		panel.add(salon);
 		panel.add(apartar);
+		panel.add(denegado);
 //		Color de fondo del panel
 		panel.setBackground(new Color(45, 45, 45));
 
@@ -145,7 +146,9 @@ public class Horarios extends JFrame {
 				String horaSalida = (String) salida.getSelectedItem();
 				String lab = (String) salon.getSelectedItem();
 				PeticionesBD peticion = new PeticionesBD();
-				peticion.asignarHorario(matriculaID, day, horaEntrada, horaSalida, lab);
+				boolean acceso = peticion.verificarDisponibilidadSalon(day, horaEntrada, horaSalida, lab);
+				System.out.println(acceso);
+				denegado.setText(" ");
 			}
 		});
 	}
