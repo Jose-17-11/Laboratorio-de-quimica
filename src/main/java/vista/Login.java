@@ -17,6 +17,8 @@ import javax.swing.border.LineBorder;
 
 import controlador.AccesoAdmin;
 import modelo.Administrador;
+import vista.admin.Inicio;
+import vista.rutas.Img;
 
 //Clase funcional con la base de datos, solo falta renombrar variables
 public class Login extends JFrame {

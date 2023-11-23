@@ -1,4 +1,4 @@
-package vista;
+package vista.rutas;
 
 public enum Img {
 	IMAGEN_1("C:\\Users\\Jose Manuel\\eclipse-workspace\\Laboratorio-de-quimica\\src\\main\\resources\\img\\tecCuautla.png"),

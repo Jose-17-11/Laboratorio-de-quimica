@@ -1,4 +1,4 @@
-package vista;
+package vista.admin;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,6 +20,7 @@ import javax.swing.border.LineBorder;
 
 import controlador.ModeloDatos;
 import controlador.TablaAccesos;
+import vista.rutas.Img;
 
 public class ReporteAccesos extends JFrame {
 	/**

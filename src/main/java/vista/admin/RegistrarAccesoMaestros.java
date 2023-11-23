@@ -1,4 +1,4 @@
-package vista;
+package vista.admin;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -23,6 +23,7 @@ import javax.swing.border.LineBorder;
 
 import controlador.EliminarMaestros;
 import controlador.RegistrarAccesoMaestro;
+import vista.rutas.Img;
 
 //Clase funcional con la base de datos, solo falta renombrar variables
 public class RegistrarAccesoMaestros extends JFrame {
@@ -30,9 +31,9 @@ public class RegistrarAccesoMaestros extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	JLabel description, exitosamente, liberadoL, n1, n2, n3, n4, n5;
+	JLabel description, exitosamente, n1, n2, n3, n4, n5;
 	JTextField text1;
-	JButton registrarEntrada, liberarLab;
+	JButton registrarEntrada;
 	int i = 0;
 
 	String tecCuautla = Img.IMAGEN_1.getRuta();
@@ -96,12 +97,6 @@ public class RegistrarAccesoMaestros extends JFrame {
 		exitosamente.setBounds(475, 280, 400, 50);
 		exitosamente.setForeground(Color.WHITE);
 
-		liberarLab = new JButton("Liberar laboratorio");
-		liberarLab.setBounds(980, 250, 150, 30);
-		liberadoL = new JLabel(" ");
-		liberadoL.setBounds(990, 280, 400, 50);
-		liberadoL.setForeground(Color.WHITE);
-
 		/*******************************************************************
 		 * Evento del boton para centrar el JComboBox mediante renderizado *
 		 *******************************************************************/
@@ -143,9 +138,7 @@ public class RegistrarAccesoMaestros extends JFrame {
 		panel.add(materias);
 		panel.add(carreras);
 		panel.add(exitosamente);
-		panel.add(liberadoL);
 		panel.add(registrarEntrada);
-		panel.add(liberarLab);
 		panel.setBackground(new Color(45, 45, 45));
 
 		/*********************************************************
@@ -182,16 +175,6 @@ public class RegistrarAccesoMaestros extends JFrame {
 					e1.printStackTrace();
 				}
 
-			}
-		});
-		/********************************************************************************
-		 * Evento del boton para liberar laboratorio y se pueda acceder a el nuevamente *
-		 ********************************************************************************/
-		liberarLab.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				i = 1;
-				liberadoL.setText("laboratorio " + (String) laboratorio.getSelectedItem() + " liberado" );
 			}
 		});
 	}

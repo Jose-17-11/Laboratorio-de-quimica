@@ -1,4 +1,4 @@
-package vista;
+package vista.admin;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import controlador.EliminarMaestros;
+import vista.rutas.Img;
 
 //Clase completamente funcional con base de datos
 public class EliminarMaestro extends JFrame {

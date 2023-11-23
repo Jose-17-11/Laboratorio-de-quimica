@@ -389,8 +389,8 @@ public class PeticionesBD {
 		return null;
 	}
 
-	public String asignarHorario(String diaSemana, String horaInicio, String horaFin,String salon) {
-
+	public String asignarHorario(String matricula, String diaSemana, String horaInicio, String horaFin, String salon)
+			throws SQLIntegrityConstraintViolationException {
 		Connection cn = null;
 		Statement stm = null;
 		ResultSet rs = null;
@@ -399,19 +399,20 @@ public class PeticionesBD {
 			cn = conexion.conectar();
 			stm = cn.createStatement();
 			rs = stm.executeQuery("SELECT * FROM horarios");
-			String consulta = "INSERT INTO `horarios` (matricula_maestro, dia_semana, hora_inicio, hora_fin, salon) VALUES (?, ?, ?, ?, ?)";
+			String consulta = "INSERT INTO horarios (matricula_maestro, dia_semana, hora_inicio, hora_fin, salon) VALUES (?, ?, ?, ?, ?)";
 
 			PreparedStatement pstmt = cn.prepareStatement(consulta);
-			pstmt.setString(1, diaSemana);
-			pstmt.setString(2, horaInicio);
-			pstmt.setString(3, horaFin);
-			pstmt.setString(4, salon);
+			pstmt.setString(1, matricula);
+			pstmt.setString(2, diaSemana);
+			pstmt.setString(3, horaInicio);
+			pstmt.setString(4, horaFin);
+			pstmt.setString(5, salon);
 
 			int filasAfectadas = pstmt.executeUpdate();
 			if (filasAfectadas > 0) {
-				return ("Maestro agregado con éxito.");
+				return ("Laboratorio " + salon + " asignado de " + horaInicio + " a " + horaFin + " con éxito.");
 			} else {
-				return ("No se pudo agregar el profesor.");
+				return ("No se pudo asignar el salon.");
 			}
 
 		} catch (SQLIntegrityConstraintViolationException e) {
@@ -425,65 +426,71 @@ public class PeticionesBD {
 		return "";
 	}
 
+	/*******************************************************************************************
+	 * Metodo que verifica si un salon ya esta registrado en un dia y rango de hora
+	 * especifico *
+	 *******************************************************************************************/
 	public boolean verificarDisponibilidadSalon(String day, String horaEntrada, String horaSalida, String lab) {
-	    Connection cn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    Time entrada = null;
-	    Time salida = null;
-	    boolean decision = true;
-	    try {
-	        cn = conexion.conectar();
+		Connection cn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Time entrada = null;
+		Time salida = null;
+		boolean decision = true;
+		try {
+			cn = conexion.conectar();
 
-	        // Utilizar una consulta parametrizada
-	        String consulta = "SELECT * FROM horarios WHERE dia_semana = ? AND salon = ?";
-	        pstmt = cn.prepareStatement(consulta);
+			// Utilizar una consulta parametrizada
+			String consulta = "SELECT * FROM horarios WHERE dia_semana = ? AND salon = ?";
+			pstmt = cn.prepareStatement(consulta);
 
-	        // Establecer el valor para el marcador de posición
-	        pstmt.setString(1, day);
-	        pstmt.setString(2, lab);
+			// Establecer el valor para el marcador de posición
+			pstmt.setString(1, day);
+			pstmt.setString(2, lab);
 
-	        // Ejecutar la consulta
-	        rs = pstmt.executeQuery();
+			// Ejecutar la consulta
+			rs = pstmt.executeQuery();
 
-	        while (rs.next()) {
-	            String dia = rs.getString(3);
-	            entrada = rs.getTime(4);
-	            salida = rs.getTime(5);
-	            String salon = rs.getString(6);
-	            System.out.println(dia + entrada + salida + salon + "\n");
-	            
-	            LocalTime horaE = entrada.toLocalTime();
+			while (rs.next()) {
+				String dia = rs.getString(3);
+				entrada = rs.getTime(4);
+				salida = rs.getTime(5);
+				String salon = rs.getString(6);
+
+				LocalTime horaE = entrada.toLocalTime();
 				LocalTime horaS = salida.toLocalTime();
 
-	            LocalTime horaEParametro = LocalTime.parse(horaEntrada);
+				LocalTime horaEParametro = LocalTime.parse(horaEntrada);
 				LocalTime horaSParametro = LocalTime.parse(horaSalida);
 				// Calcula la diferencia entre las horas
 				Duration x = Duration.between(horaE, horaS);
 				Duration y = Duration.between(horaEParametro, horaS);
 				Duration z = Duration.between(horaSParametro, horaS);
-				Duration prueba = Duration.between(horaEParametro, horaSParametro);
 				long minutosX = x.toMinutes();
 				long minutosY = y.toMinutes();
 				long minutosZ = z.toMinutes();
-				long minutosPrueba = prueba.toMinutes();
-				System.out.println(minutosPrueba);
-				if((minutosY>minutosX || minutosY<=0) && (minutosZ>=minutosX || minutosZ<0)) {
+				if(minutosY < 0 && minutosZ > minutosX) {
+					decision = false;
+					break;
+				}else if(minutosY>0 && minutosZ<minutosX) {
+					decision = false;
+					break;
+				}else if ((minutosY > minutosX || minutosY <= 0) && (minutosZ >= minutosX || minutosZ < 0)) {
 					decision = true;
-				}else {
+				} else {
 					decision = false;
 					break;
 				}
-	        }
-	        
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        // Cerrar recursos
-	        conexion.desconectar(cn, pstmt, rs);
-	    }
+			}
 
-	    return decision;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// Cerrar recursos
+			conexion.desconectar(cn, pstmt, rs);
+		}
+
+		return decision;
 	}
 
 }

@@ -1,4 +1,4 @@
-package vista;
+package vista.admin;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 
 import controlador.AgregarNuevoMaestro;
 import controlador.Errores;
+import vista.rutas.Img;
 
 public class NuevoMaestro extends JFrame {
 	/**

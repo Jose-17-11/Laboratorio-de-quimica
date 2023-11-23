@@ -1,4 +1,4 @@
-package vista;
+package vista.admin;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -22,7 +25,9 @@ import javax.swing.border.LineBorder;
 import controlador.EliminarMaestros;
 import controlador.ModeloDatos;
 import controlador.TablaHorarios;
+import controlador.horarios.AsignarHorario;
 import modelo.PeticionesBD;
+import vista.rutas.Img;
 
 public class Horarios extends JFrame {
 	/**
@@ -106,10 +111,10 @@ public class Horarios extends JFrame {
 		salon.setBounds(1035, 120, 100, 30);
         
 		apartar = new JButton("Apartar laboratorio");
-		apartar.setBounds(530, 500, 200, 30);
+		apartar.setBounds(200, 500, 200, 30);
 
-		denegado = new JLabel();
-		denegado.setBounds(100, 500, 400, 50);
+		denegado = new JLabel(" ");
+		denegado.setBounds(450, 490, 600, 50);
 		denegado.setForeground(Color.WHITE);
 
 //		Se generan los elementos que estaran visibles
@@ -145,10 +150,9 @@ public class Horarios extends JFrame {
 				String horaEntrada = (String) entrada.getSelectedItem();
 				String horaSalida = (String) salida.getSelectedItem();
 				String lab = (String) salon.getSelectedItem();
-				PeticionesBD peticion = new PeticionesBD();
-				boolean acceso = peticion.verificarDisponibilidadSalon(day, horaEntrada, horaSalida, lab);
-				System.out.println(acceso);
-				denegado.setText(" ");
+				AsignarHorario asignarSalon = new AsignarHorario();
+				String resultado = asignarSalon.asignar(matriculaID, day, horaEntrada, horaSalida, lab);
+				denegado.setText(resultado);
 			}
 		});
 	}
